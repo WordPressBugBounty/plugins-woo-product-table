@@ -1,10 +1,10 @@
 === Product Table for WooCommerce by CodeAstrology (wooproducttable.com) ===
 Contributors: codersaiful,mdibrahimk48,ultraaddons,unikforce,rafiul17,fazlebari
 Donate link: https://donate.stripe.com/4gw2bB2Pzdjd8mYfYZ
-Tags: wc product table, woo table, woo product table,woocommerce product table, product table
+Tags: woo product table, wc product table, woo table, woocommerce product table, product table
 Requires at least: 4.0.0
 Tested up to: 6.7.1
-Stable tag: 3.5.6
+Stable tag: 3.5.7
 Requires PHP: 5.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -12,10 +12,13 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Helps you to display your products in a searchable table layout with filters.
 
 == Description ==
-(**Woo Product Table**) Product Table plugin helps you to display your WooCommerce products in a searchable table layout with filters.  Add a table on any page or post via a shortcode. You can create tables as many as you want.
-Create a table for restaurant order systems, Online music sell, product Wholesale, Course Booking, or Selling books any many more.
 
-**Have a looks in short for WooCommerce Product Table**
+[Doc](https://wooproducttable.com/documentation/) | [Demo Tables](https://demo.wooproducttable.com/) | [Get Premium](https://wooproducttable.com/pricing/) | [Try Live](https://wpprincipal.xyz/?site=wpt)
+
+(**Woo Product Table**) Product Table plugin helps you to display your WooCommerce products in a searchable table layout with filters.  Add a table on any page or post via a shortcode. You can create tables as many as you want.
+Create a table for restaurant order systems, Online music sell, product Wholesale, Course Booking, or Selling books any many more. [Read more](https://wooproducttable.com)
+
+**Have a looks in short for Woo Product Table**
 
 https://www.youtube.com/watch?v=jZ9bx4VqB08
 
@@ -153,7 +156,7 @@ Our [YouTube Playlist](https://www.youtube.com/channel/UCnrFzReNAohkHglbF91ZEYA/
 
 **Important feature ( Pro and Free )**
 
-* WPML/Loco Translate/Multi Languag
+* WPML/Loco Translate/Multi Language
 * Product Table to any page and where using shortcode.
 * Advance Search and filter option - Search from whole site
 * Multi-level Query to show product as table. such as: Category, taxonomy, tag, menu-order, price limit. Anything.
@@ -168,7 +171,7 @@ Our [YouTube Playlist](https://www.youtube.com/channel/UCnrFzReNAohkHglbF91ZEYA/
 * Quick Order Table
 * WooCommerce Shop page as Table
 * WooCommerce Archive as Table
-* WooCommerce Cateogry as Table
+* WooCommerce Category as Table
 * WooCommerce Tag as Table
 * WooCommerce Taxonomy as Table
 * Any type customization possible by Existing [Filter and Action hook](https://wooproducttable.com/plugin-api/).
@@ -262,8 +265,8 @@ You are welcome to contribute  to this project. Join with us [Fork Github reposi
 
 1. Upload the plugin files to the `/wp-content/plugins/woo-product-table` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress
-3. Go to Dashboard -> Product Table -> Add New -> Publsih Post 
-4. Copy the shortcode from Publsihed post and Paste to your desired Page or any where. AND Enjoy Woo Product Table.
+3. Go to Dashboard -> Product Table -> Add New -> Publish Post
+4. Copy the shortcode from Published post and Paste to your desired Page or anywhere. AND Enjoy Woo Product Table.
 5. From Dashboard -> Product Table -> Edit Table - You will get lot's of setting. Such: Column setting, Query setting, Search Box Setting etc.
 6. Use the PRODUCT TABLE -> Configure screen to configure the plugin's default setting. There are lot's of feature and Setting available over there.
 
@@ -332,6 +335,12 @@ You can easily show specific category products. While creating new table click o
 25. Manually responsive for mobile devices
 
 == Changelog ==
+
+= 3.5.7 =
+* *Fixed: Live demo link fixed.
+* Fixed: Table column's number sorting issue for floating number has been fixed.
+* Code Optimized
+* Bug fixed 
 
 = 3.5.6 =
 * Code Optimized
