@@ -10,11 +10,11 @@
         'column_settings'   => __( 'Column', 'woo-product-table' ),
         'query'            => __( 'Query', 'woo-product-table' ),
         // 'basics'            => __( 'Basics', 'woo-product-table' ), //Has removed @version 3.1.9.5
-        'table_style'       => sprintf(__( 'Design %sLimited%s', 'woo-product-table' ), '<i class="wpt_limited_badge">', '</i>' ),
+        'table_style'       => __( 'Design', 'woo-product-table' ),
         'options'            => __( 'Options', 'woo-product-table' ),
         // 'conditions'        => __( 'Extra Options', 'woo-product-table' ), //Has removed @version 3.1.9.5
         'search_n_filter'   => __( 'Search & Filter','woo-product-table' ),
-        'config'            => sprintf(__( 'Configuration %sPro%s', 'woo-product-table' ), '<i class="wpt_pro_badge">', '</i>' ),
+        'config'            => __( 'Configuration', 'woo-product-table' ),
     );
     $tab_array = apply_filters( 'wpto_admin_tab_array', $tab_array, $post );
     
@@ -24,15 +24,24 @@
         'border'=>__('Border' , 'woo-product-table' ),
         'text-align'=>__('Text Align' , 'woo-product-table' ),
         'vertical-align'=>__('Vertical Align' , 'woo-product-table' ),
+        'width' => 'Column/Item width',
+        'height' => 'Column/Item Height',
+        'font-size' => 'Font or Text Size',
+        'font-style' => 'Font Style',
+        'font-weight' => 'Font Weight',
+        'padding' => 'Element Padding',
+        'margin' => 'Element Margin',
     );
     $supported_css_property = apply_filters( 'wpto_supported_css_property', $supported_css_property, $tab_array, $post );
 
-    $supported_terms    = array(
+    $supported_terms = $temp_basics_terms    = array(
         'product_cat'       =>  __( 'Product Categories', 'woo-product-table' ),
         'product_tag'       =>  __( 'Product Tags', 'woo-product-table' ),
     );
     $supported_terms    = apply_filters( 'wpt_supported_terms', $supported_terms, $tab_array, $post  );
 
+    $supported_terms    = array_merge( $temp_basics_terms, $supported_terms );
+    
     $additional_variable = array(
         'tab_array' => $tab_array,
         'css_property' => $supported_css_property,
@@ -152,9 +161,9 @@
 <style>
 /*****For Column Moveable Item*******/
 ul#wpt_column_sortable li>span.handle{
-    background-image: url('<?php echo WPT_BASE_URL . 'assets/images/move_color_3.png'; ?>');
+    background-image: url('<?php echo WPT_BASE_URL . 'assets/images/move.png'; ?>');
 }
 ul#wpt_column_sortable li.wpt_sortable_peritem.enabled>span.handle{
-    background-image: url('<?php echo WPT_BASE_URL . 'assets/images/move_color_3.png'; ?>');
+    background-image: url('<?php echo WPT_BASE_URL . 'assets/images/move.png'; ?>');
 }
 </style>

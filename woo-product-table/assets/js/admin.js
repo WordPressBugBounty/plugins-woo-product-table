@@ -106,9 +106,6 @@ jQuery.fn.extend({
             targetElement.addClass('expanded_li');
             targetElement.addClass(myTargetClass);
             OptimizeColumnWithName();
-            $('a.my-inslide-close-button.button').remove();
-            var myCloseButton = '<a class="my-inslide-close-button button">Close</a>';
-            targetElement.find('.wpt_shortable_data').append(myCloseButton);
         }
 
         $('select.internal_select').on('select2:select', function( e ){
@@ -376,13 +373,13 @@ jQuery.fn.extend({
          * 
          * @type String
          */
-        $('body').on('click','#wpt_configuration_form .inside-column-settings-wrapper .inside-nav-tab-wrapper a', function(){
-            $('.inside-nav-tab-wrapper a.nav-tab-active').removeClass('nav-tab-active');
-            $(this).addClass('nav-tab-active');
-            var target_tab = $(this).data('target');
-            $('.inside-column-settings-wrapper .inside_tab_content.tab-content-active').removeClass('tab-content-active');
-            $('.inside-column-settings-wrapper .inside_tab_content#'+target_tab).addClass('tab-content-active');
-        });
+        // $('body').on('click','#wpt_configuration_form .inside-column-settings-wrapper .inside-nav-tab-wrapper a', function(){
+        //     $('.inside-nav-tab-wrapper a.nav-tab-active').removeClass('nav-tab-active');
+        //     $(this).addClass('nav-tab-active');
+        //     var target_tab = $(this).data('target');
+        //     $('.inside-column-settings-wrapper .inside_tab_content.tab-content-active').removeClass('tab-content-active');
+        //     $('.inside-column-settings-wrapper .inside_tab_content#'+target_tab).addClass('tab-content-active');
+        // });
         /**************Admin Panel's Setting Tab Start Here For Tab****************/
         var selectLinkTabSelector = "body.wpt_admin_body #wpt_configuration_form a.wpt_nav_tab";
         var selectTabContentSelector = "body.wpt_admin_body #wpt_configuration_form .wpt_tab_content";
@@ -508,10 +505,10 @@ jQuery.fn.extend({
          * Supposse: your 
          * REMEMEBER: select tag's class would be '.wpt_toggle' to activate this part
          */
-        $('select.wpt_toggle').each(function(){
+        $('.wpt_toggle').each(function(){
             changeOnOffElement(this)
         });
-        $(document).on('change','select.wpt_toggle',function(){
+        $(document).on('change','.wpt_toggle',function(){
             changeOnOffElement(this);
         });
         function changeOnOffElement(ElObject){
@@ -543,21 +540,7 @@ jQuery.fn.extend({
             }
         }
         
-        /**
-         * Managing Column from Activation Column List
-         * 
-         * @since We have added this featre at Version 2.7.8.2
-         */
-        $( 'body.wpt_admin_body' ).on('click', '.add_switch_col_wrapper .switch-enable-available li.switch-enable-item', function(){
-            var keyword = $(this).data('column_keyword');
-            $(this).toggleClass('item-enabled');
-            //Detect and set Responsive Stats
-            ///detect_responsive_stats();
-            $(this).closest('.tab-content').find('.wpt_column_sortable li.wpt_sortable_peritem input.checkbox_handle_input[data-column_keyword="' + keyword + '"]').trigger('click');
-            setTimeout(function(){
-                detect_responsive_stats();
-            }, 1000);
-        });
+
         /**
          * Column Section Managing
          */
@@ -601,6 +584,20 @@ jQuery.fn.extend({
                 });
             }
             OptimizeColumnWithName();
+
+            var $mainWrapper = $(this).closest('.inside-column-settings-wrapper .inside_tab_content.tab-content.tab-content-active');
+            var $listWrapper = $(this).closest('.wpt-dropdown-list');
+            // Get all enabled items in the dropdown
+            var $enabledItems = $mainWrapper.find('.wpt-dropdown-list>li.item-enabled');
+            
+            // Get text values of enabled items in one line
+            var enabledItemsText = $enabledItems.map(function() {
+                return $(this).data('column_keyword');
+            }).get().join(',');
+
+            $mainWrapper.find('.wpt-col-selected-pre-value').html(enabledItemsText);
+
+
 //            
 //            targetLiSelector.fadeIn(function(){
 //                $(this).css('opacity','0.3');
@@ -682,6 +679,17 @@ jQuery.fn.extend({
             });
         });
         
+        $(document.body).on('click','.wpt-custom-select-box', function() {
+            if ($(this).hasClass('disabled')) return;
+    
+            var wrapper = $(this).closest('.custom-select-box-wrapper');
+
+            wrapper.find('.wpt-custom-select-box').removeClass('active');
+            $(this).addClass('active');
+    
+            const selectedValue = $(this).data('value');
+            wrapper.find('input').val(selectedValue).trigger('change');
+        });
         /**
          * Add new Column
          * 
@@ -691,17 +699,19 @@ jQuery.fn.extend({
             var keyword = $('.and_new_column_key').val();
             var label = $('.and_new_column_label').val();
             var type = $('.add_new_column_type_select').val();
-            var type_name = $('.add_new_column_type_select option[value='+ type +']').text();
+            var type_name = $('div.wpt-custom-select-boxes .wpt-custom-select-box.active').text();
             var type_name_show = '<i>' + type_name + '</i>: ';
             if(type === 'default'){
                 type_name_show = '';
             }
-            var device_name = $('.inside-column-settings-wrapper nav.inside-nav-tab-wrapper a.wpt_inside_nav_tab.nav-tab-active').data('device');
-            var device = '_' + device_name;
-            if(device_name === 'desktop'){
-                device = '';
+            var device = $(this).closest('.add_new_col_wrapper').attr('data-device');
+            var device_wise_section = device;
+            // var device = '_' + device_name;
+            if(device === ''){
+                device_wise_section = 'desktop';
             }
-            
+            device_wise_section = device_wise_section.replace('_', '');
+            console.log(device_wise_section);
             var html = '';
             html = '<li class="wpt_sortable_peritem  column_keyword_' + keyword + ' enabled">';
                 html += '<span title="Move Handle" class="handle ui-sortable-handle"></span>';
@@ -720,13 +730,13 @@ jQuery.fn.extend({
             //Check Empty Field
             if(keyword === '' || label === ''){
                alert("No empty field suported.");
-               return;
+               return; 
             }
             //Check if already same keyword is Available
-            if($('#inside-' + device_name + ' .wpt_column_sortable li.wpt_sortable_peritem').hasClass('column_keyword_' + keyword)){
+            if($('#inside-' + device_wise_section + ' .wpt_column_sortable li.wpt_sortable_peritem').hasClass('column_keyword_' + keyword)){
                 alert('Same keyword already in list');
                 return;
-            }
+            }  
             
             if(keyword !== '' || label !== ''){
                 //Remove Ajax Save
@@ -734,11 +744,11 @@ jQuery.fn.extend({
                 
                 
                 
-                $('#inside-' + device_name + ' .wpt_column_sortable').append(html);
+                $('#inside-' + device_wise_section + ' .wpt_column_sortable').append(html);
                 $('.and_new_column_key').val('');
                 $('.and_new_column_label').val('');
                 $('.add_new_column_type_select').val('');
-                
+                // return;
                 $('body.wpt_admin_body input#publish[name=save]').trigger('click');
             }
             return;
@@ -921,11 +931,6 @@ jQuery.fn.extend({
     }
 
 
-    $(document.body).on('click,change','tr.user_can_not_edit input,tr.user_can_not_edit select',function(e){
-        e.preventDefault();
-        alert("Sorry");
-    });
-    
 
     $(document.body).on('submit', 'form#wpt-main-configuration-form', function (e){
 
@@ -1122,6 +1127,296 @@ jQuery.fn.extend({
             
         });
     }
+
+    $('.wpt_query_terms_each_tr').each(function(){
+        var $this = $(this);
+        var $select = $this.find('select');
+        var $selectVal = $select.val();
+        var $key = $this.data('key');
+        var $status = 'hide';
+        if($selectVal.length > 0){
+
+            $this.removeClass('hide');
+            $this.addClass('active');
+            $status = 'active';
+        }else{
+            $this.addClass('hide');
+            $this.removeClass('active');
+            $status = 'hide';
+        }
+        $('.wpt-qs-handle-' + $key).attr('data-status',$status);
+
+
+        
+        
+    });
+
+    
+
+
+    $(document.body).on('click','span.wpt-query-selection-handle',function(){
+        var $this = $(this);
+        var $key = $this.data('key');
+
+        var $target_ttr = $('.wpt_query_terms_each_tr.' + $key);
+        if($target_ttr.find('select').val().length > 0){
+            return;
+        }
+ 
+        var $status = $this.attr('data-status');
+        console.log($status);
+        if($status == 'hide'){
+            $('.wpt_query_terms_each_tr[data-key="' + $key + '"]').removeClass('hide').addClass('active').fadeIn();
+            $this.attr('data-status','active');
+            $('tr.wpt_query_terms_each_tr.' + $key).addClass('active').removeClass('hide');
+        }else{
+            $('.wpt_query_terms_each_tr[data-key="' + $key + '"]').addClass('hide').removeClass('active').fadeOut();
+            $this.attr('data-status','hide');
+            $('tr.wpt_query_terms_each_tr.' + $key).removeClass('active').addClass('hide');
+        }
+    });
+
+    $('.wpt_query_terms_each_tr.product_cat').addClass('active').removeClass('hide');
+    $('span.wpt-query-selection-handle.wpt-qs-handle-product_cat').addClass('active'); 
+    $('span.wpt-query-selection-handle.wpt-qs-handle-product_cat').attr('data-status', 'active');
+
+
+    $(document.body).on('click', '.inside_tab_content.tab-content>h4', function(e){
+
+        e.preventDefault();
+        var $this = $(this); 
+        var $insideTabContent = $this.closest('.inside_tab_content');
+        $insideTabContent.toggleClass('expanded');
+        
+        // $this.closest('.inside_tab_content').find('.inside_tab_content_inner').toggle(); // Changed from toggleFade() to toggle()
+    });
+    
+    //free version a premium feature gullor field name attr remove kora hoyeche.
+    $('.wpt-premium-feature-in-free-version,.user_can_not_edit').each(function(){
+        var $this = $(this);
+        $this.attr('title', 'Premium Feature');
+        if($this.closest('form#wpt-main-configuration-form').length > 0) return;
+        $this.find('input,select').removeAttr('name');
+    });
+
+    //asole free ver theke jeno configure page e kono data change na hoy er jonne nicher code ta use kora hoyeche.
+    // Store initial values
+    var $userCanNotEdit = '.wpt-premium-feature-in-free-version input,.wpt-premium-feature-in-free-version select,.user_can_not_edit input, .user_can_not_edit select, .user_can_not_edit textarea';
+    $($userCanNotEdit).each(function() {
+        if($(this).closest('form#wpt-main-configuration-form').length < 1) return;
+        $(this).data('original-value', $(this).val());
+    });
+
+    // For checkboxes and radio buttons, store checked state
+    var $userCanNotEditCheck = '.wpt-premium-feature-in-free-version input[type="checkbox"], .wpt-premium-feature-in-free-version input[type="radio"],.user_can_not_edit input[type="checkbox"], .user_can_not_edit input[type="radio"]';
+    $($userCanNotEditCheck).each(function() {
+        if($(this).closest('form#wpt-main-configuration-form').length < 1) return;
+        $(this).data('original-checked', this.checked);
+    });
+
+    // Listen to changes
+    $('.wpt-premium-feature-in-free-version,.user_can_not_edit').on('change input', 'input, select, textarea', function(e) {
+        const $el = $(this);
+        if($el.closest('form#wpt-main-configuration-form').length < 1) return;
+        if ($el.is(':checkbox') || $el.is(':radio')) {
+            // Revert checkbox/radio state
+            this.checked = $el.data('original-checked');
+        } else {
+            // Revert other input/select/textarea value
+            $el.val($el.data('original-value'));
+        }
+
+        // Optionally alert or notify user
+        // alert("This field is not editable.");
+    });
+
+
+
+    //.column_add_extra_items.extra-inner-item-wrapper,.column_tag_for_all,
+    var findExtraSelection = '.column_label_fullwidth,.column_label_showing,.column_label_showing,.auto_responsive_column_label_show,.column_only_login_user,.column_only_login_user';
+
+    $(document.body).on('click', '.style_str_wrapper h3.style-heading', function(e){
+        e.preventDefault();
+        $(this).toggleClass('active');
+        $(this).closest('.style_str_wrapper').find('.wpt-style-body').toggle('fast');
+        // $(this).text($(this).text() === 'Show Style Control' ? 'Hide Style Control' : 'Show Style Control');
+
+        $(this).closest('.wpt_column_setting_extra').find(findExtraSelection).removeClass('show');
+        $(this).closest('.style_str_wrapper').find('h3.other-feature-on-off').removeClass('active');//.text($(this).text() === 'Show Others Control' ? 'Hide Others Control' : 'Show Others Control');
+
+    });
+    $(document.body).on('click', '.style_str_wrapper h3.other-feature-on-off', function(e){
+        e.preventDefault();
+        $(this).toggleClass('active');
+        $(this).closest('.wpt_column_setting_extra').find(findExtraSelection).toggleClass('show');
+        // $(this).text($(this).text() === 'Show Others Control' ? 'Hide Others Control' : 'Show Others Control');
+
+        $(this).closest('.style_str_wrapper').find('.wpt-style-body').hide('fast');
+        $(this).closest('.style_str_wrapper').find('h3.style-heading').removeClass('active');//.text($(this).text() === 'Show Style Control' ? 'Hide Style Control' : 'Show Style Control');
+    });
+
+    $(document.body).on('click', '#wpt-template-selector .wpt-template-item', function() {
+        var type = $(this).data('type');
+        if(type == 'limited'){
+            return;
+        }
+        console.log(type);
+        $('.wpt-template-item').removeClass('active');
+        $(this).addClass('active');
+        
+        var selectedTemplate = $(this).data('template');
+        $('#selected_template').val(selectedTemplate);
+    });
+    $('html body').append('<div id="template-preview-popup" class="template-preview-popup"><img src="" alt="Template Preview"></div>');
+    
+
+    var $popup = $('#template-preview-popup');
+
+    $('#wpt-template-selector .wpt-template-item').on('mouseenter', function(e) {
+        var imgSrc = $(this).find('img').attr('src');
+        $popup.find('img').attr('src', imgSrc).css({ width: 'auto', height: 'auto' });
+        $popup.css({ display: 'block' });
+    }).on('mousemove', function(e) {
+        var mouseX = e.pageX;
+        var mouseY = e.pageY;
+
+        var popupWidth = $popup.outerWidth();
+        var popupHeight = $popup.outerHeight();
+        var windowWidth = $(window).width();
+        var windowHeight = $(window).height();
+        var scrollTop = $(window).scrollTop();
+
+        // Default position: bottom-right of cursor
+        var left = mouseX + 15;
+        var top = mouseY + 15;
+
+        // If popup goes beyond right edge
+        if ((mouseX + popupWidth + 20) > windowWidth) {
+            left = mouseX - popupWidth - 15;
+        }
+
+        // If popup goes beyond bottom edge
+        if ((mouseY + popupHeight + 20) > (windowHeight + scrollTop)) {
+            top = mouseY - popupHeight - 15;
+        }
+
+        $popup.css({
+            top: top + 'px',
+            left: left + 'px'
+        });
+    }).on('mouseleave', function() {
+        $popup.hide();
+    });
+
+
+
+
+    var $dropdownContainer = $('.wpt-dropdown-container');
+    var $deviceWiseWrapper = $('.inside-column-settings-wrapper .inside_tab_content.tab-content.tab-content-active');
+    $deviceWiseWrapper.each(function() {
+
+        var $mainWrapper = $(this);
+        var $enabledItems = $mainWrapper.find('.wpt-dropdown-list>li.item-enabled');
+        
+        // Get text values of enabled items in one line
+        var enabledItemsText = $enabledItems.map(function() {
+            return $(this).data('column_keyword');
+        }).get().join(',');
+
+        $mainWrapper.find('.wpt-col-selected-pre-value').html(enabledItemsText);
+    });
+
+    
+    
+    $(document.body).on('click','.wpt-add-preset-column', function(e) {
+        e.preventDefault();
+        var $button = $(this);
+        var $mainWrapper = $button.closest('.add_new_column_main_wrapper');
+        var $dropdownContainer = $mainWrapper.find('.wpt-dropdown-container');
+        $dropdownContainer.toggle(); // show/hide dropdown
+         
+    });
+    $(document.body).on('click','.wpt-add-new-custom-column-btn', function(e) {
+        e.preventDefault();
+        var $button = $(this);
+        var $mainWrapper = $button.closest('.add_new_column_main_wrapper');
+        var $_device = $mainWrapper.data('device');  
+        $('.add_new_col_wrapper').attr('data-device', $_device);
+        $('.add-new-custom-column-wrapper').toggleClass('wpt-default-hide'); // show/hide dropdown
+        $dropdownContainer.hide();  
+    });
+
+
+    // Search filter  
+    $('.wpt-column-search-box').on('input', function() {
+        var searchTerm = $(this).val().toLowerCase();
+        var $dropdown_li = $(this).closest('.wpt-dropdown-container').find('.wpt-dropdown-list li');
+        $dropdown_li.each(function() {
+            var text = $(this).text().toLowerCase();
+            var character = $(this).data('character').toLowerCase();
+            if (text.indexOf(searchTerm) > -1 || character.indexOf(searchTerm) > -1) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
+
+    // When an item is selected
+    $(document).on('click', '.wpt-dropdown-list li', function() {
+        if ($(this).hasClass('premium')) {return;}
+        var selectedKeyword = $(this).data('column_keyword');
+
+        if ($(this).hasClass('item-enabled')) {
+            // console.log('Already enabled. Deselect:', selectedKeyword);
+            // Your custom de-select logic here
+            // e.g., remove from active list, update UI, etc.
+            $(this).removeClass('item-enabled');
+        } else {
+            $(this).addClass('item-enabled');
+            // console.log('New selection:', selectedKeyword);
+            // Your custom select logic here
+            // e.g., add to active list, mark as enabled, etc.
+        }
+
+        var $mainWrapper = $(this).closest('.inside-column-settings-wrapper .inside_tab_content.tab-content.tab-content-active');
+        var $listWrapper = $(this).closest('.wpt-dropdown-list');
+        // Get all enabled items in the dropdown
+        var $enabledItems = $listWrapper.find('li.item-enabled');
+        
+        // Get text values of enabled items in one line
+        var enabledItemsText = $enabledItems.map(function() {
+            return $(this).data('column_keyword');
+        }).get().join(',');
+
+        $mainWrapper.find('.wpt-col-selected-pre-value').html(enabledItemsText);
+        
+        $(this).closest('.tab-content').find('.wpt_column_sortable li.wpt_sortable_peritem input.checkbox_handle_input[data-column_keyword="' + selectedKeyword + '"]').trigger('click');
+
+        // console.log('Selected:', selectedKeyword);
+        
+        // Hide dropdown after selection
+        // $dropdownContainer.hide();
+        
+        // You can call your custom function here if needed
+        // yourCustomFunction(selectedKeyword);
+    });
+
+    
+    // Click outside to close dropdown
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('.wpt-dropdown-container-insider,.wpt_column_sortable, #wpt-add-preset-column').length) {
+            $dropdownContainer.hide();
+        }
+    });
+    var $addCustomColWrapperContainer = $('.add-new-custom-column-wrapper');
+    // Click outside to close dropdown
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('.add_new_col_wrapper,.wpt_column_sortable,.inside_tab_content').length) {
+            $addCustomColWrapperContainer.addClass('wpt-default-hide');
+        }
+    });
+
 
 
 })(jQuery);
