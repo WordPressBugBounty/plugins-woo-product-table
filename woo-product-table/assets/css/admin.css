@@ -1383,7 +1383,7 @@ span.fork-button-wpt>a:hover {
 div#wpt_configuration_form .add_switch_col_wrapper .ultraaddons-panel {
     padding: 0;
     border: 0 none;
-    margin-bottom: 0;
+    margin-bottom: 7px;
 }
 
 div#wpt_configuration_form #column_settings .ultraaddons-panel{width: 100%;}
@@ -2223,10 +2223,7 @@ div#wpt_shortcode_configuration_metabox_id .ultraaddons .with-background.slim-ti
     line-height: 25px;
     text-transform: none;
 }
-.wpt-config-header-area .ultraaddons-panel.border-with-shadow {
-    background: #02142a url('../images/brand/animated-logo.gif') no-repeat center right;
-    background-size: auto 45px;
-}
+
 .border-with-shadow{
     border-top: 0 none;
     box-shadow: 0 0 20px 0 #0000001a;
@@ -2265,6 +2262,8 @@ div.wpt-content p.wpt-issue-submit a {
     letter-spacing: 0;
     font-style: normal;
     background: transparent;
+    white-space: nowrap;
+    line-height: 31px;
 }
 div.wpt-content a.wpt-create-ticket {
     background: #aeaeae !important;
@@ -2443,61 +2442,7 @@ span.wpt-help-icon.wpt-help-focused{
 
     }
 }
-.wpt-renew-license-notice>div {
-    background: white;
-    padding: 10px 15px;
-    display: block !important;
-    clear: both;
-    border-left: 5px solid #d00;
-    margin: 13px 0 0 0;
-    box-sizing: border-box;
-    height: max-content;
-    line-height: 30px;
-}
 
-.wpt-renew-license-notice {
-    display: block;
-    clear: both;
-    height: max-content;
-    background: transparent;
-}
-.error.wpt-renew-license-notice {
-    border: 0 none !important;
-    padding: 0;
-}
-.wpt-renew-license-notice a {
-    background: #E91E63;
-    border-color: #E91E63;
-    text-transform: uppercase !important;
-    padding: 6px 10px !important;
-    border-left: 27px solid #7a052d;
-    position: relative;
-    color: white;
-    text-decoration: none;
-    white-space: nowrap;
-}
-.wpt-renew-license-notice a:hover {
-    
-    background: #4caf50;
-    border-color: #38823b;
-    text-transform: uppercase !important;
-    padding: 6px 10px !important;
-    border-left: 27px solid #38823b;
-    position: relative;
-}
-.wpt-renew-license-notice a::before {
-    content: "☀";
-    position: absolute;
-    top: -2px;
-    left: -20px;
-    color: rgb(255, 255, 255);
-}
-img.wpt-license-brand-logo {
-    width: 25px;
-    height: auto;
-    display: inline-block;
-    margin-bottom: -8px;
-}
 a.wpt-doc-lick{
     text-decoration: none;
     padding: 5px;
@@ -2538,7 +2483,7 @@ a.wpt-doc-lick{
     flex-wrap: wrap;
     gap: 8px;
     justify-content: flex-start;
-    align-items: center;
+    align-items: stretch;
 }
 
 .wpt-custom-select-box {
@@ -2550,6 +2495,7 @@ a.wpt-doc-lick{
     border-style: dashed;
     font-weight: 500;
     background: #0073aa14;
+    color: black;
 }
 
 .wpt-custom-select-box:hover {
@@ -2577,6 +2523,39 @@ a.wpt-doc-lick{
     cursor: not-allowed;
     border-style: dashed;
 } 
+.wpt-extra-content>* {
+    padding: 0;
+    margin: 0 !important;
+}
+.sfl-auto-gen-box .wpt-custom-select-boxes {
+    gap: 0;
+    border: 1px #0073aa;
+    border-style: double;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-wrap: nowrap;
+    flex-direction: row;
+}
+.sfl-auto-gen-box .wpt-custom-select-boxes .wpt-custom-select-box {
+    border-radius: 0;
+    border: 0 none;
+}
+.sfl-auto-gen-box .wpt-custom-select-boxes .wpt-custom-select-box.active {
+    color: white;
+    background: #0073aa;
+}
+
+.sfl-auto-gen-box .wpt-custom-select-boxes {
+    border-color: #0073aa;
+    border-radius: 2px;
+}
+
+.sfl-auto-gen-box .wpt-custom-select-boxes .wpt-custom-select-box {
+    background: #ededed61;
+    color: black;
+    box-shadow: 1px 0px 1px #00000062;
+}
+
 span.wpt-design-collaps {
     border: 1px solid #ffffff00;
     margin: 0 10px;
@@ -2616,15 +2595,15 @@ div.wpt_tab_content table th {
 .wpt-query-terms-selection span.wpt-query-selection-handle {
     background: #e5e5e557;
     padding: 10px;
-    color: #0000004f;
+    color: #000000;
     cursor: pointer;
 }
 .wpt-query-terms-selection span.wpt-query-selection-handle[data-status="active"] {
-    background: #e5e5e5;
-    color: #000000;
+    background: #0073aa;
+    color: white;
 }
 .wpt-query-terms-selection span.wpt-query-selection-handle:hover {
-    background: #607D8B;
+    background: #0073aa;
     color: white;
 }
 tr.wpt_query_terms_each_tr.hide {
@@ -2829,7 +2808,10 @@ ul#wpt_column_sortable li>span.handle.checkbox_handle>input.enabled:before, ul#w
 .wpt-premium-feature-in-free-version {
     opacity: 0.7;
     background: #ffbebe70;
-    padding: 6px;
+}
+.wpt-premium-feature-in-free-version>* {
+    margin: 5px;
+    padding: 2px;
 }
 
 .wpt-dropdown-list li.switch-enable-item.premium::after,
@@ -2957,3 +2939,34 @@ span.wpt-query-selection-handle.type-pf-premium:after,
     max-height: 500px;
     display: block;
 }
+
+.wpt-configure-form-header {
+    display: flex;
+    align-items: stretch;
+    gap: 25px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.wpt-configure-form-header>* {
+    padding: 0;
+    margin: 0;
+}
+.wpt-setting-search-input{
+    margin: 2px !important;
+    /* flex: 1; */
+    width: 400px;
+    max-width: 100%;
+    min-width: 300px;
+    
+    background: rgb(255, 255, 255) !important;
+}
+input#wpt-setting-search-input {
+    padding: 3px 10px;
+    margin: 2px !important;
+}
+.wpt_shotcode_content_column{color: green;font-weight:bold;display:none; padding-left: 12px;}
+.wpt_auto_select_n_copy{display: inline-block;width:300px;}
+.wpt_copy_button_metabox-column{font-size: 12px !important;padding: 4px 13px !important;}
+.wpt_copy_button_metabox{display: none;}
+.wpt_metabox_copy_content{color: #007692;font-weight:bold;display:none; padding-left: 12px;}

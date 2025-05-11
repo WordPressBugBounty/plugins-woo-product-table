@@ -1,10 +1,10 @@
-=== Product Table for WooCommerce by CodeAstrology (wooproducttable.com) ===
+=== Product Table for WooCommerce ===
 Contributors: codersaiful,mdibrahimk48,ultraaddons,unikforce,rafiul17,fazlebari
 Donate link: https://donate.stripe.com/4gw2bB2Pzdjd8mYfYZ
 Tags: woo product table, wc product table, woo table, woocommerce product table, product table
 Requires at least: 6.2
 Tested up to: 6.8
-Stable tag: 4.0.3
+Stable tag: 5.0.0
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -336,9 +336,17 @@ You can easily show specific category products. While creating new table click o
 
 == Changelog ==
 
-= 4.0.3 =
+= 5.0.0 =
 * Tested with latest WordPress version 6.8.1
+* Fixed: Vulnerability issue fixed.
+* Speed optimized.
+* Sanitize input data.
+* Added: nonce security added for all type form submit.
 * UI design updated.
+* Changed: Configure menu has change to "Settings" menu.
+* Fixed: Table column's number sorting issue for floating number has been fixed.
+* Remove all type unnesesarry comment.
+* Remove all type unnesesarry code.
 * Code Optimized
 * Bug fixed 
 

@@ -34,7 +34,8 @@ if (!function_exists('wpt_selected')) {
     function wpt_selected($keyword, $gotten_value, $default_config = false)
     {
         $current_config_value = is_array($default_config) ? $default_config : get_option(WPT_OPTION_KEY);
-        echo (isset($current_config_value[$keyword]) && $current_config_value[$keyword] == $gotten_value ? 'selected' : false);
+        $output = (isset($current_config_value[$keyword]) && $current_config_value[$keyword] == $gotten_value ? 'selected' : false);
+        echo esc_attr( $output );
     }
 }
 if (!function_exists('wpt_default_option')) {
@@ -50,12 +51,11 @@ if (!function_exists('wpt_default_option')) {
      */
     function wpt_default_option($page)
     {
-        $html = "";
         if ($page == 'wpt_configuration_tab') {
-            $default = esc_html__("Default", 'woo-product-table');
-            $html .= "<option value=''>$default</option>";
+            ?>
+            <option value=""><?php echo esc_html__("Default", 'woo-product-table'); ?></option>
+            <?php
         }
-        echo $html;
     }
 }
 
@@ -74,25 +74,6 @@ function wpt_remove_empty_value_from_array($array)
 
 
     if (! is_array($array)) return $array;
-    // foreach($array as $key=>&$arr){
-    //     if( empty( $arr ) ){
-    //         unset( $array[$key] );
-    //     }
-    //     if( is_array($arr) ){
-    //         wpt_remove_empty_value_from_array( $arr );
-    //     }
-    // }
-    // return $array;
-
-    // $array = array_filter($array,function($val){
-    //     if( is_array( $val ) ){
-    //         return wpt_remove_empty_value_from_array( $val );
-    //     }
-    //     return ! empty($val);
-    // });
-
-    // $array = array_filter(array_map('array_filter', $array));
-    // return $array;
 
     foreach ($array as $key => &$value) {
         if (! is_bool($value) && empty($value)) {
@@ -126,28 +107,7 @@ function wpt_datewise_validation()
 {
     //If pro available, directly return true
     if (defined('WPT_PRO_DEV_VERSION')) return true;
-
     return;
-    $prev_args = array(
-        'post_type' => 'wpt_product_table',
-        'date_query' => array(
-            'before' => '2022-3-15' //2022-3-15 //2014-3-15
-        ),
-    );
-
-    $prev_query = new WP_Query($prev_args);
-    $prev_total = $prev_query->found_posts;
-    if ($prev_total > 0) return true;
-
-    $args = array(
-        'post_type' => 'wpt_product_table',
-        'post_status' => 'publish',
-    );
-
-    $query = new WP_Query($args);
-    $total = $query->found_posts;
-
-    return $total <= 0; //Limitation upto 2 //limitation has changed upto 0
 }
 
 /**
@@ -420,7 +380,6 @@ if (! function_exists('wpt_add_tabs')) {
         if (! $screen || !(false !== $is_wpt_page)) {
             return;
         }
-        // var_dump($is_wpt_page,false !== $is_wpt_page,$screen);
 
         $screen->add_help_tab(
             array(
@@ -472,7 +431,6 @@ function wpt_social_links()
             'youtube'   => ['url' => 'https://www.youtube.com/c/codeastrology'],
             'facebook'   => ['url' => 'https://www.facebook.com/codeAstrology'],
             'twitter'   => ['url' => 'https://www.twitter.com/codeAstrology'],
-            'skype'   => ['url' => '#codersaiful', 'title' => 'codersaiful'],
         ];
         foreach ($codeastrology as $key => $cLogy) {
             $image_name = $key . '.png';
@@ -522,7 +480,7 @@ if (! function_exists('wpt_doc_link')) {
     function wpt_doc_link($url, $title = 'Helper doc')
     {
     ?>
-        <a href="<?php echo esc_url($url) ?>" target="_blank" class="wpt-doc-lick"><?php esc_html_e($title); ?></a>
+        <a href="<?php echo esc_url( $url ) ?>" target="_blank" class="wpt-doc-lick"><?php echo esc_html( $title ); ?></a>
     <?php
     }
 }
@@ -541,11 +499,11 @@ if (! function_exists('wpt_doc_link')) {
  */
 function wpt_help_icon_render($msg = false, $extra_msg = false)
 {
-    $title = __($msg, 'woo-product-table');
+    $title = $msg;
     if (empty($msg)) {
         $title = __("Don't change for auto translate. Leave empty to get translated text.", 'woo-product-table');
     }
-    $extra_msg_text = $extra_msg ? "\n" . __('Write with default or English language.') : '';
+    $extra_msg_text = $extra_msg ? "\n" . __('Write with default or English language.', 'woo-product-table') : '';
     ?>
     <span class="wpt-help-icon" title="<?php echo esc_attr($title .  $extra_msg_text); ?>">?</span>
 <?php

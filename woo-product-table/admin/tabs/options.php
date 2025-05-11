@@ -21,7 +21,7 @@ $data = isset( $meta_basics['data'] ) ? $meta_basics['data'] : false;
                 </th>
                 <td>
 
-                <div class="custom-select-box-wrapper">
+                <div class="custom-select-box-wrapper sfl-auto-gen-box">
 
                     <?php
                     $name = 'basics[ajax_action]';
@@ -39,8 +39,8 @@ $data = isset( $meta_basics['data'] ) ? $meta_basics['data'] : false;
                     <div class="wpt-custom-select-boxes">
 
                         <?php foreach ($options as $value => $label): ?>
-                            <div class="wpt-custom-select-box <?php echo $current_val === $value ? 'active' : ''; ?>" data-value="<?php echo esc_attr($value); ?>">
-                                <?php echo $label; ?>
+                            <div class="wpt-custom-select-box <?php echo esc_attr( $current_val === $value ? 'active' : '' ); ?>" data-value="<?php echo esc_attr($value); ?>">
+                                <?php echo esc_html( $label ); ?>
                             </div>
                         <?php endforeach; $current_val = null; $options = []; ?>
                     </div>
@@ -60,7 +60,7 @@ $data = isset( $meta_basics['data'] ) ? $meta_basics['data'] : false;
                 </th>
                 <td>
                     
-                <div class="custom-select-box-wrapper">
+                <div class="custom-select-box-wrapper sfl-auto-gen-box">
                     <input type="hidden" name="basics[pagination]"
                      value="<?php echo esc_attr( $meta_basics['pagination'] ?? 'on' ); ?>"
                      class="custom-select-box-input" id="wpt_table_ajax_pagination">
@@ -89,12 +89,8 @@ $data = isset( $meta_basics['data'] ) ? $meta_basics['data'] : false;
                     <?php wpt_doc_link('https://wooproducttable.com/docs/doc/table-options/pagination-on-of/'); ?>   
                     
                 </div>
-
-
+                    <p>To change style, go to Design tab. This pagination will replaced on WooCommerce shop archive page by your theme's default pagination.</p> 
                     
-                    <p><?php esc_html_e( 'To change style, go to Design tab', 'woo-product-table' ); ?></p>
-                    <p class="warning"><?php echo sprintf(esc_html__( '%1$sPagination will not work%2$s on WooCommerce shop, archive page or created shop archive page by any page builder. %1$sThis feature will only work on table page where table shortcode pasted.%2$s', 'woo-product-table' ), '<b>', '</b>'); ?></p>
-                    <p class="wpt-tips"><?php echo sprintf(esc_html__( '%1$sThis pagination will replaced on WooCommerce shop archive page%2$s by your theme\'s default pagination.', 'woo-product-table' ), '<b>', '</b>'); ?></p>
                 </td>
             </tr>
             <tr>
@@ -103,7 +99,7 @@ $data = isset( $meta_basics['data'] ) ? $meta_basics['data'] : false;
                 </th>
                 <td>
 
-                <div class="custom-select-box-wrapper">
+                <div class="custom-select-box-wrapper sfl-auto-gen-box">
 
                     <?php
                     $name = 'basics[pagination_ajax]';
@@ -121,8 +117,8 @@ $data = isset( $meta_basics['data'] ) ? $meta_basics['data'] : false;
                     <div class="wpt-custom-select-boxes">
 
                         <?php foreach ($options as $value => $label): ?>
-                            <div class="wpt-custom-select-box <?php echo $current_val === $value ? 'active' : ''; ?>" data-value="<?php echo esc_attr($value); ?>">
-                                <?php echo $label; ?>
+                            <div class="wpt-custom-select-box <?php echo esc_attr( $current_val === $value ? 'active' : '' ); ?>" data-value="<?php echo esc_attr($value); ?>">
+                                <?php echo esc_html( $label ); ?>
                             </div>
                         <?php endforeach; $current_val = null; $options = []; ?>
                     </div>
@@ -189,7 +185,7 @@ $data = isset( $meta_basics['data'] ) ? $meta_basics['data'] : false;
                     <label class="wpt_label" for='wpt_table_table_class'><?php esc_html_e( 'Set a Class name for Table', 'woo-product-table' );?></label>
                 </th>
                 <td>
-                    <input name="basics[table_class]" value="<?php echo isset( $meta_basics['table_class'] ) ? $meta_basics['table_class'] : ''; ?>" class="wpt_data_filed_atts ua_input" data-name="table_class" type="text" placeholder="<?php esc_attr_e( 'Product Table Class Name (Optional)', 'woo-product-table' ); ?>" id='wpt_table_table_class'>
+                    <input name="basics[table_class]" value="<?php echo esc_attr( $meta_basics['table_class'] ?? '' ); ?>" class="wpt_data_filed_atts ua_input" data-name="table_class" type="text" placeholder="<?php esc_attr_e( 'Product Table Class Name (Optional)', 'woo-product-table' ); ?>" id='wpt_table_table_class'>
                 </td>
             </tr>
         </table>
@@ -197,7 +193,7 @@ $data = isset( $meta_basics['data'] ) ? $meta_basics['data'] : false;
 
 
     <!-- Convert as Hidden Number the Temporary number -->
-    <input name="basics[temp_number]" data-name="temp_number" type="hidden" placeholder="123" id='wpt_table_temp_number' value="<?php echo isset( $meta_basics['temp_number'] ) ? $meta_basics['temp_number'] : random_int( 10, 600 ); ?>" readonly="readonly">
+    <input name="basics[temp_number]" data-name="temp_number" type="hidden" placeholder="123" id='wpt_table_temp_number' value="<?php echo esc_attr( $meta_basics['temp_number'] ?? $post->ID ); ?>" readonly="readonly">
 
     <div class="wpt_column">
         <table class="ultraaddons-table">
@@ -215,10 +211,10 @@ $data = isset( $meta_basics['data'] ) ? $meta_basics['data'] : false;
                     class="wpt_data_filed_atts ua_input" 
                     data-name="add_to_cart_text" 
                     type="text" 
-                    value="<?php echo $add_to_cart_text; ?>" 
+                    value="<?php echo esc_attr( $add_to_cart_text ); ?>" 
                     placeholder="<?php echo esc_attr( $add_to_cart_text_placeholder ); ?>" 
                     id="wpt_table_add_to_cart_text">
-                    <p><?php echo sprintf( esc_html__( 'Put a Space (" ") for getting default %s Add to Cart Text %s', 'woo-product-table' ), '<b>', '</b>' );?></p>
+                    <p><?php echo esc_html__( 'Put a Space (" ") for getting default Add to Cart Text', 'woo-product-table' );?></p>
                 </td>
             </tr>
         </table>
@@ -236,19 +232,18 @@ $data = isset( $meta_basics['data'] ) ? $meta_basics['data'] : false;
                     
                     $stats_post_count_text = $meta_basics['stats_post_count'] ?? '';
                     if(property_exists($post, 'post_status') && $post->post_status == 'auto-draft'){
-                        $stats_post_count_text = __( 'Showing %s out of %s', 'woo-product-table' );
-                        $stats_post_count_text = __( 'Showing %s out of %s' );
+                        /* translators: 1: showing number 2: total product number */
+                        $stats_post_count_text = __( 'Showing %1$s out of %2$s', 'woo-product-table' );
                     }
-                    $stats_post_count_placeholder = __( 'Example: Showing %s out of %s', 'woo-product-table' );
                     ?>
                     <input name="basics[stats_post_count]" 
                     class="wpt_stats_post_count ua_input" 
                     data-name="stats_post_count" 
                     type="text" 
-                    value="<?php echo $stats_post_count_text; ?>" 
-                    placeholder="<?php echo esc_attr( $stats_post_count_placeholder ); ?>" 
+                    value="<?php echo esc_attr( $stats_post_count_text ); ?>" 
+                    placeholder="Example: Showing %1$s out of %2$s" 
                     id="wpt_table_stats_post_count">
-                    <p><?php echo esc_html__( 'First %s will replace by showing number and second % will replace by total product number. To hide, leave as empty', 'woo-product-table' );?></p>
+                    <p>%1$s and %2$s will be replaced with showing number and total product number. To hide, leave as empty.</p>
                 </td>
             </tr>
         </table>
@@ -259,26 +254,24 @@ $data = isset( $meta_basics['data'] ) ? $meta_basics['data'] : false;
             <tr>
                 <th>
                     <label class="wpt_label" for="wpt_table_stats_page_count"><?php esc_html_e( 'Stats Page Count Text', 'woo-product-table' );?></label>
-                    <?php wpt_help_icon_render( __( 'Leave as empty to hide Stats.' ) ); ?>
+                    <?php wpt_help_icon_render( __( 'Leave as empty to hide Stats.', 'woo-product-table' ) ); ?>
                 </th>
                 <td>
                     <?php
-                    // var_dump($meta_basics);
                     $stats_page_count_text = $meta_basics['stats_page_count'] ?? '';// __( 'Page %s out of %s', 'woo-product-table' );
                     if(property_exists($post, 'post_status') && $post->post_status == 'auto-draft'){
-                        $stats_page_count_text = __( 'Page %s out of %s', 'woo-product-table' );
-                        $stats_page_count_text = __( 'Page %s out of %s' );
+                        /* translators: 1: current page number 2: total page count */
+                        $stats_page_count_text = __( 'Page %1$s out of %2$s', 'woo-product-table' );
                     }
-                    $stats_page_count_placeholder = __( 'Example: Page %s out of %s', 'woo-product-table' );
                     ?>
                     <input name="basics[stats_page_count]" 
                     class="wpt_stats_page_count ua_input" 
                     data-name="stats_page_count" 
                     type="text" 
-                    value="<?php echo $stats_page_count_text ?>" 
-                    placeholder="<?php echo esc_attr( $stats_page_count_placeholder ); ?>" 
+                    value="<?php echo esc_attr( $stats_page_count_text ); ?>" 
+                    placeholder="Example: Page %s out of %s" 
                     id="wpt_table_stats_page_count">
-                    <p><?php echo esc_html__( 'First %s will replace by current page number and second % will replace by total page count.  To hide, leave as empty', 'woo-product-table' );?></p>
+                    <p><p>%1$s and %2$s will be replaced with current page number and total page number. To hide, leave as empty.</p></p>
                 </td>
             </tr>
         </table>
@@ -299,7 +292,7 @@ $data = isset( $meta_basics['data'] ) ? $meta_basics['data'] : false;
                         class="wpt_data_filed_atts ua_input" 
                         data-name="add_to_cart_selected_text" 
                         type="text" 
-                        value="<?php echo $add_to_cart_selected_text;  ?>" 
+                        value="<?php echo esc_attr( $add_to_cart_selected_text );  ?>" 
                         placeholder="<?php echo esc_attr( $add_to_cart_selected_placeholder ); ?>" 
                         id="wpt_table_add_to_cart_selected_text">
                     </td>
@@ -317,7 +310,7 @@ $data = isset( $meta_basics['data'] ) ? $meta_basics['data'] : false;
                         <input name="basics[check_uncheck_text]"  
                         class="wpt_data_filed_atts ua_input" 
                         data-name="check_uncheck_text" type="text" 
-                        value="<?php echo $check_uncheck_text; ?>" 
+                        value="<?php echo esc_attr( $check_uncheck_text ); ?>" 
                         placeholder="<?php echo esc_attr( $check_uncheck_placeholder );?>" 
                         id="wpt_table_check_uncheck_text">
                     </td>
@@ -361,7 +354,7 @@ $meta_conditions =  get_post_meta( $post->ID, 'conditions', true );
                         <option value="short_description" <?php echo isset( $meta_conditions['description_type'] ) && $meta_conditions['description_type'] == 'short_description' ? 'selected' : ''; ?>><?php esc_html_e( 'Short Description', 'woo-product-table' ); ?></option><!-- Default Value -->
                         <option value="description" <?php echo isset( $meta_conditions['description_type'] ) && $meta_conditions['description_type'] == 'description' ? 'selected' : ''; ?>><?php esc_html_e( 'Long Description', 'woo-product-table' ); ?></option>
                     </select><?php wpt_doc_link('https://wooproducttable.com/docs/doc/table-options/set-description-type/');?>
-                    <p style="color: #0087be;"><?php echo sprintf( esc_html__( 'Here was %sdescription_lenght%s, But from 3.6, We have removed %sdescription_lenght%s', 'woo-product-table' ),'<b>','</b>','<b>','</b>' ); ?>.</p>
+                    
                 </td>
             </tr>
 
