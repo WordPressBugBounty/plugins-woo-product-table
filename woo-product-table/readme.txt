@@ -4,7 +4,7 @@ Donate link: https://donate.stripe.com/4gw2bB2Pzdjd8mYfYZ
 Tags: woo product table, wc product table, woo table, woocommerce product table, product table
 Requires at least: 6.2
 Tested up to: 6.8
-Stable tag: 5.0.1
+Stable tag: 5.0.2
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -335,6 +335,14 @@ You can easily show specific category products. While creating new table click o
 25. Manually responsive for mobile devices
 
 == Changelog ==
+
+= 5.0.2 =
+* Tested with latest WooCommerce version 9.8.5
+* Tested with latest WordPress version 6.8.1
+* Fixed: Vulnerability issue fixed.
+* Added: new column Tick sign added for showing status of add to cart button event.
+* Code Optimized
+* Bug fixed 
 
 = 5.0.1 =
 * Fixed: Column arranging issue from dashboard issue has been fixed.

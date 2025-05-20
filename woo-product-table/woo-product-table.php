@@ -8,11 +8,11 @@
  * Author URI: https://wooproducttable.com/?utm_source=WPT+Plugin+Dashboard&utm_medium=Free+Version
  * Tags: wooproducttable, woocommerce product list,woocommerce product table, wc product table, product grid view, inventory, shop product table
  * 
- * Version: 5.0.1
+ * Version: 5.0.2
  * Requires at least:    6.2
  * Tested up to:         6.8
  * WC requires at least: 6.2.2
- * WC tested up to: 	 9.8.3
+ * WC tested up to: 	 9.8.5
  * 
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -41,7 +41,7 @@ if( ! defined( 'WPT_PLUGIN_BASE_FOLDER' ) ){
 }
 
 if( ! defined( 'WPT_DEV_VERSION' ) ){
-    define( 'WPT_DEV_VERSION', '5.0.1.0' );
+    define( 'WPT_DEV_VERSION', '5.0.2.1' );
 }
 
 if( ! defined( 'WPT_CAPABILITY' ) ){
@@ -101,6 +101,7 @@ include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 WPT_Product_Table::getInstance();
 
 $column_array = array(
+    'tick'         => __( 'Tick', 'woo-product-table' ),
     'check'         => __( 'Check', 'woo-product-table' ),
     'thumbnails'    => __( 'Thumbnails', 'woo-product-table' ),
     'product_title' => __( 'Products', 'woo-product-table' ),
@@ -137,7 +138,7 @@ $column_array = array(
 $column_array = apply_filters( 'wpto_default_column_arr', $column_array );
 WPT_Product_Table::$columns_array =  $column_array;
 $default_enabled_col_array = array(
-    // 'check'         => 'check',  
+    'tick'         => 'tick',  
     'thumbnails'    => 'thumbnails',  
     'product_title' => 'product_title',  
     'quantity'      => 'quantity',  

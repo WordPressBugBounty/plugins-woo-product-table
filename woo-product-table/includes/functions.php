@@ -1,13 +1,29 @@
 <?php
-/**
- * Only fir developer 
- */
-if( !function_exists('dd') ){
-    function dd($val){
-        echo '<pre>';
-            var_dump($val);
-        echo '</pre>';
-    }
+
+if( ! function_exists('dd') ){
+
+    /**
+     * Dumps the given values in a human-readable format.
+     * 
+     * ***************************
+     * FOR DEVELOPMENT AND DEBUG PERPOSE
+     * ***************************
+     *
+     * This function accepts a variable number of arguments and
+     * outputs each value using `var_dump()` wrapped in `<pre>` tags
+     * for improved readability. It only processes non-empty arrays.
+     *
+     * @param mixed ...$vals Variable number of arguments to be dumped.
+     */
+	function dd( ...$vals){
+		if( ! empty($vals) && is_array($vals) ){
+			foreach($vals as $val ){
+				echo "<pre>";
+				var_dump($val);
+				echo "</pre>";
+			}
+		}
+	}
 }
 
 if( !function_exists( 'wpt_column_setting_for_tax_cf' ) ){
@@ -283,6 +299,15 @@ if( ! function_exists( 'wpt_column_tag_for_all' ) ){
 
     function wpt_column_tag_for_all( $keyword, $_device_name, $column_settings ){
 
+        switch( $keyword ){
+            case 'check':
+            case 'tick':
+            case 'serial_number':
+            case 'total':
+            case 'product_id': return;
+
+        }
+
         $input_one = isset( $column_settings[$keyword]['input_one'] ) ? $column_settings[$keyword]['input_one'] : false;
         $tag_value = isset( $column_settings[$keyword]['tag'] ) ? $column_settings[$keyword]['tag'] : false;
 
@@ -336,6 +361,7 @@ if( ! function_exists( 'wpt_column_add_extra_items' ) ){
         // if( $keyword == 'check' || $keyword == 'product_id' ) return;
         switch( $keyword ){
             case 'check': return;
+            case 'tick': return;
             case 'serial_number': return;
             case 'total': return;
             case 'product_id': return;
@@ -928,7 +954,7 @@ if( ! function_exists( 'wpt_limit_words' ) ){
      * Making new String/description based on word Limit.
      * 
      * @param String $string
-     * @param Integer $word_limit
+     * @param int $word_limit
      * @return String
      */
     function wpt_limit_words( $string = '', $word_limit = 10 ){
@@ -1431,7 +1457,8 @@ if( ! function_exists( 'wpt_shop_archive_sorting_args' ) ){
     function wpt_shop_archive_sorting_args( $args ){
 
         if( is_shop() || is_product_taxonomy() ){
-            $_orderby = sanitize_text_field( wp_unslash( $_GET['orderby'] ?? '' ) );
+            $get_param = filter_input_array( INPUT_GET);
+            $_orderby = sanitize_text_field( wp_unslash( $get_param['orderby'] ?? '' ) );
             $args['paged'] = 1;
             $args['post_type'] = ['product'];
             switch( $_orderby ){
