@@ -12,8 +12,13 @@ jQuery(function($) {
         if(WPT_DATA.notice_timeout){
             notice_timeout = WPT_DATA.notice_timeout;
         }
-        
-
+        // console.log(window.WPTControl);
+        // $(document.body).on('click', 'label.search_keyword_label.product_cat', function() {
+        //     const self = $(this);
+        //     console.log('WPTControl.handleResetSearch() clicked');
+        //     const ddddd = $('.wpt-query-reset-button');
+        //     window.WPTControl.handleResetSearch(self);
+        // });
         //Select2
         if(typeof $('.wpt-wrap .search_select').select2 === 'function' && $('.wpt-wrap .search_select').length > 0 && WPT_DATA.select2 !== 'disable' ){
             var select2Object = {};
@@ -53,7 +58,7 @@ jQuery(function($) {
          * 
          * @since 4.3 we have added this condition. 
          */
-        if(!$('div.wpt-wrap table').hasClass('wpt_product_table')){ //div wpt-wrap 
+        if(!$('div.wpt-wrap .wpt-table-tag').hasClass('wpt_product_table')){ //div wpt-wrap 
             return false; 
         }        
         
@@ -71,63 +76,18 @@ jQuery(function($) {
             return false;
         }
 
-        /**
-         * Pagination
-         * @type Objectt
-         */
-        // changeSpanToAPagi();
-        function changeSpanToAPagi(){
-            return;
-            $('div.wpt_table_pagination span.page-numbers.current').each(function(){
-                var _number = $(this).html();
-                $('div.wpt_table_pagination span.page-numbers.current').replaceWith('<a class="page-numbers current">' + _number + '</a>');
-            });
-
-            $('div.wpt_table_pagination a.page-numbers').each(function(){
-                var _number = $(this).html();
-                $(this).attr('data-page_number',_number);
-            });
-        }
         
         $('body').on('click','.wpt_table_pagination.pagination_loading a',function(e){
             e.preventDefault();
             return false;
         });
         
-        
-
-        //New Pagination
-        $(document.body).on('click','dddd.wpt_pagination_ajax .wpt_my_pagination a',function(e){
-            
-            e.preventDefault();
-            var thisButton = $(this);
-            var thisPagination = thisButton.closest('.wpt_my_pagination');
-            var page_number = $(thisButton).text();
-
-            var table_id = thisPagination.data('table_id');
-            
-            var data = {
-                action: 'wpt_pagination',
-                table_id: table_id,
-                page_number: page_number,
-            };
-            $.ajax({
-                type: 'POST',
-                url: ajax_url,// + get_data,
-                data: data,
-                success:function(result){
-                    $('header.entry-header').html(result);
-                    thisPagination.html(result);
-                }
-            });
-        });
-
-        
+                
         setTimeout(function(){
-			$('table.wpt_product_table td select').trigger('change');
+			$('.wpt-table-tag.wpt_product_table .wpt-td-tag select').trigger('change');
 		}, 4000);
         function fixAfterAjaxLoad() {
-            $('table.wpt_product_table td select').trigger('change');
+            $('.wpt-table-tag.wpt_product_table .wpt-td-tag select').trigger('change');
             //$.getScript(include_url + "/js/mediaelement/mediaelement-and-player.min.js");
             $.getScript(include_url + "/js/mediaelement/wp-mediaelement.min.js");
             $.getScript(plugin_url + "/woocommerce/assets/js/frontend/add-to-cart.js");
@@ -138,7 +98,7 @@ jQuery(function($) {
         $(document.body).on('wpt_ajax_loaded',function(){
             var variableProducts,musicProducts;
             setTimeout(function(){
-                variableProducts = $('tr.product_type_variable').length;
+                variableProducts = $('.wpt-tr-tag.product_type_variable').length;
                 musicProducts = $('audio,.wp-audio-shortcode').length;
                 if(variableProducts > 0){
                     // $.getScript(include_url + "/js/mediaelement/wp-mediaelement.min.js");
@@ -252,7 +212,7 @@ jQuery(function($) {
         $( document.body ).trigger( 'wc_fragments_refreshed' );
         $( document.body ).trigger( 'wc_fragments_refresh' );
         $( document.body ).trigger( 'wc_fragment_refresh' );
-        // $( document.body ).trigger( 'removed_from_cart' );
+
         WPT_MiniCart();
         
         //if(config_json.thumbs_lightbox === '1' || config_json.thumbs_lightbox === 1){
@@ -269,7 +229,7 @@ jQuery(function($) {
 
             if('undefined' !== typeof variation_id){
 
-                var data_objec = $(this).closest('tr.wpt-row').data('product_variations');
+                var data_objec = $(this).closest('.wpt-tr-tag.wpt-row').data('product_variations');
                 var finalImgObject,fullObject;
                 
                 $.each(data_objec,function(index,eachObj){
@@ -320,7 +280,7 @@ jQuery(function($) {
                 //Setting style of height width
                 wrapper_style = "style='width: " + image_width + "px; height:" + image_height + "px'";
             }
-            product_title = $(thisImg).closest('tr.wpt-row').find('.wpt_product_title_in_td').text();
+            product_title = $(thisImg).closest('.wpt-tr-tag.wpt-row').find('.wpt_product_title_in_td').text();
             if(!product_title){
                 product_title = '';
             }
@@ -356,29 +316,6 @@ jQuery(function($) {
             return false;
         });
         
-        /**
-         * Click Action/Event on No ajax product in Add to cart button
-         * No Ajax Add to cart product button Action
-         *
-        $('body').on('click','a.no_ajax_action.wpt_woo_add_cart_button',function(e){
-            e.preventDefault();
-            var quantity = $(this).attr('data-quantity');
-            var uri = $(this).attr('href') + '&quantity=' + quantity;
-            uri = encodeURI(uri);
-            window.location = uri;
-        });
-        /**
-         * Click Action/Event on No ajax product in Add to cart button
-         * for Grouped and External Product
-         *
-        $('body').on('click','tr.product_type_grouped.grouped a.no_ajax_action.wpt_woo_add_cart_button,tr.product_type_external.external a.no_ajax_action.wpt_woo_add_cart_button',function(e){
-            e.preventDefault();
-            //var quantity = $(this).attr('data-quantity');
-            var uri = $(this).attr('href');
-            uri = encodeURI(uri);
-            window.location = uri;
-        });
-        //***********************************/
         
         function footerCartAnimation(){
             $('a.wpt-view-n .wpt-bag').addClass('wpt-spin4 animate-spin');
@@ -442,7 +379,7 @@ jQuery(function($) {
 
             //Changed at2.9
             var quantity = $(this).attr('data-quantity');
-            var wpt_custom_message = $('#table_id_' + temp_number + ' table#wpt_table .wpt_row_product_id_' + product_id + ' .wpt_message .message').val();
+            var wpt_custom_message = $('#table_id_' + temp_number + ' #wpt_table.wpt-table-tag .wpt_row_product_id_' + product_id + ' .wpt_message .message').val();
             var variation_id = $(this).attr('data-variation_id');
             var variation = $(this).attr('data-variation');
             if(variation){
@@ -463,7 +400,7 @@ jQuery(function($) {
             }
             var get_data = $(this).attr('href') + '&quantity=' + quantity;
             
-            var additional_json = $('#table_id_' + temp_number + ' table#wpt_table tr.wpt_row_product_id_' + product_id).attr('additional_json');
+            var additional_json = $('#table_id_' + temp_number + ' #wpt_table.wpt-table-tag .wpt-tr-tag.wpt_row_product_id_' + product_id).attr('additional_json');
 
             var data = {
                 action:     'wpt_ajax_add_to_cart',
@@ -564,10 +501,13 @@ jQuery(function($) {
             if(typeof alertMessage == 'string'){
                 var tempMsg = alertMessage.trim();
                 if(tempMsg.length !== 0){
-                    alert(alertMessage);
+                    // alert(alertMessage);
+                    WPTControl.showNotification(alertMessage, 'error', 'top_right', 4000);
                 }
             }else{
-                console.log("You have inserted " + typeof alertMessage + " Variable. But should be a String.");
+                let errMsgErr = "You have inserted " + typeof alertMessage + " Variable. But should be a String.";
+                WPTControl.showNotification(errMsgErr, 'error', 'top_right', 2000);
+                console.log(errMsgErr);
             }
         }
         $('body').on('click', 'a.wpt_variation_product.single_add_to_cart_button.button.disabled,a.disabled.yith_add_to_quote_request.button', function(e) {
@@ -1026,9 +966,9 @@ jQuery(function($) {
             var itemAmount = 0;
             
             $('#table_id_' + temp_number + ' input.enabled.wpt_tabel_checkbox.wpt_td_checkbox:checked').each(function() {
-                var thisRow = $(this).closest('tr.wpt-row');
+                var thisRow = $(this).closest('.wpt-tr-tag.wpt-row');
                 var product_id = $(this).data('product_id');
-                var thisButton = $('tr.wpt_row_product_id_' + product_id + ' wpt_action a.button.wpt_woo_add_cart_button');
+                var thisButton = $('.wpt-tr-tag.wpt_row_product_id_' + product_id + ' wpt_action a.button.wpt_woo_add_cart_button');
                 thisButton.removeClass('added');
                 thisButton.addClass( 'disabled' );
                 thisButton.addClass( 'loading' );
@@ -1053,12 +993,12 @@ jQuery(function($) {
                 }
 
 
-                var currentQantity = $('#table_id_' + temp_number + ' table#wpt_table .product_id_' + product_id ).attr('data-quantity');
+                var currentQantity = $('#table_id_' + temp_number + ' #wpt_table.wpt-table-tag .product_id_' + product_id ).attr('data-quantity');
                 currentQantity = parseFloat(currentQantity);
                 if( currentQantity <= 0 ){
                     return;
                 }
-                //var currentQantity = $('#table_id_' + temp_number + ' table#wpt_table .wpt_row_product_id_' + product_id + ' .wpt_quantity .quantity input.input-text.qty.text').val();
+                //var currentQantity = $('#table_id_' + temp_number + ' #wpt_table.wpt-table-tag .wpt_row_product_id_' + product_id + ' .wpt_quantity .quantity input.input-text.qty.text').val();
                 products_data[product_id] = {
                     product_id: product_id, 
                     quantity: currentQantity, 
@@ -1158,70 +1098,6 @@ jQuery(function($) {
 
         $('body').append('<style>div.wpt-footer-cart-wrapper>a:after,div.wpt-footer-cart-wrapper>a{background-color: ' + footer_bg_color + ';}</style>');
         
-        /**
-         * set Fragments Refresh
-         * @param {type} response
-         * @returns {undefined}
-         */
-        function setFragmentsRefresh( response ){
-            var FooterCart = $('div.wpt-footer-cart-wrapper');
-            
-            $('span.wpt-cart-remove').remove();
-            $('span.wpt_ccount').html('');
-            $( '.wpt_action>a.wpt_woo_add_cart_button' ).removeClass( 'added' );
-            if(typeof response !== 'undefined'){
-                    var fragments = response.fragments;
-                    /******IF NOT WORK CART UPDATE, JUST ADD A RIGHT SLASH AT THE BEGINING OF THIS LINE AND ACTIVATE BELLOW CODE***********/
-                    if ( fragments ) {
-                        $.each( fragments, function( key, value ) {
-                            if('string' === typeof key && typeof $( key ) === 'object'){
-                                $( "div.wpt-wrap " + key ).replaceWith( value );
-
-                            }
-                        });
-                    }
-                    //******************/
-                    if(typeof fragments.wpt_per_product !== 'string' && typeof fragments.wpt_per_product === 'undefined'){
-                        return false;
-                    }
-                    
-                    var wpt_per_product = fragments.wpt_per_product;
-                    try{
-                            wpt_per_product = $.parseJSON(wpt_per_product);
-                    }catch(e){
-                        wpt_per_product = false;
-                            //Get error message
-                    }
-
-                    if( wpt_per_product && typeof wpt_per_product  === 'object'){
-                        
-                    if(footer_cart !== 'always_hide'){
-                            FooterCart.fadeIn('slow');
-                        }
-                        
-                        $.each( wpt_per_product, function( key, value ) {
-                            $( '.wpt_row_product_id_' + key + ' .wpt_action button.single_add_to_cart_button>.wpt_ccount.wpt_ccount_' + key ).remove();
-                            $( '.wpt_row_product_id_' + key + ' .wpt_action .wpt_woo_add_cart_button' ).addClass( 'added' );
-                            if(!$('.wpt_ccount.wpt_ccount_' + key ).length){
-                                $( '.wpt_row_product_id_' + key + ' .wpt_action .wpt_woo_add_cart_button' ).append( '<span class="wpt_ccount wpt_ccount_' + key + '">' + value + '</span>' );
-                                $( '.wpt_row_product_id_' + key + ' .single_add_to_cart_button' ).append( '<span class="wpt_ccount wpt_ccount_' + key + '">' + value + '</span>' );
-                            }
-                            if( $('.wpt-cart-remove.wpt-cart-remove-' + key ).length < 1){
-
-                                $( '.wpt_row_product_id_' + key + ' .wpt_action .wpt_woo_add_cart_button' ).after( '<span data-product_id="' + key + '" class="wpt-cart-remove wpt-cart-remove-' + key + '"></span>' );
-                                $( '.wpt_row_product_id_' + key + ' .single_add_to_cart_button' ).after( '<span data-product_id="' + key + '" class="wpt-cart-remove wpt-cart-remove-' + key + '"></span>' );
-                            }
-                        });
-                    }else{
-                        if(footer_cart === 'hide_for_zerro'){
-                            FooterCart.fadeOut('slow');
-                        }
-                        
-                    }
-                    $('div.wpt-footer-cart-wrapper>a').css('background-color',footer_bg_color);
-                }
-                return false;
-        }
         
         /**
          * Delay One Second Delay
@@ -1341,29 +1217,6 @@ jQuery(function($) {
         }
 
         
-        function loadPaginationLinks($data,temp_number){
-            var targetTable = $('#table_id_' + temp_number + ' table#wpt_table');
-            $.ajax({
-                    type: 'POST',
-                    url: ajax_url,// + get_data,
-                    data: $data,
-                    success: function(paginate_data){
-                        var thisPagiWrappers = $('#table_id_' + temp_number + ' .wpt_table_pagination');
-                        
-                        thisPagiWrappers.html(paginate_data);
-                        changeSpanToAPagi();
-                        var newjsonData = $('#table_id_' + temp_number + ' mypagi').attr('myjson');
-                        // var thisNewPagiWrappers = $('#table_id_' + temp_number + ' .wpt_table_pagination').attr('data-whole_data');
-                        
-                        // thisNewPagiWrappers = JSON.parse(thisNewPagiWrappers);
-                        // thisNewPagiWrappers = thisNewPagiWrappers.targetTableArgs;
-                        
-                        targetTable.attr( 'data-data_json', newjsonData );
-                        thisPagiWrappers.removeClass('pagination_loading');
-                    }
-                });
-        }
-        
         /**
          * Handleling Filter Features
          */
@@ -1388,7 +1241,7 @@ jQuery(function($) {
             var temp_number = $(this).data('temp_number');
             $('#table_id_' + temp_number + ' select.filter_select').each(function(){
                 $(this).prop('selectedIndex', 0);
-                //$(this).children().first().attr('selected','selected');
+
             });
             $('#table_id_' + temp_number + ' select.filter_select').trigger('change');
 
@@ -1408,7 +1261,7 @@ jQuery(function($) {
              * Uncheck All, If any change on filter button
              * @version 2.0
              */
-            let tableBodyobj = $('#table_id_' + temp_number + ' table#wpt_table tbody');
+            let tableBodyobj = $('#table_id_' + temp_number + ' #wpt_table.wpt-table-tag tbody');
             
             var ClassArray =[];
             var serial = 0;
@@ -1421,11 +1274,11 @@ jQuery(function($) {
                 }
             });
             var finalClassSelctor = '.filter_row' + ClassArray.join(''); //Test will keep
-            var hideAbleClass = '#table_id_' + temp_number + ' table tr.wpt_row';
+            var hideAbleClass = '#table_id_' + temp_number + ' table .wpt-tr-tag.wpt_row';
         
             let foundRow = $(finalClassSelctor);
             let foundFirstRow = foundRow.first();
-            let colSpanCount = tableBodyobj.find('tr').first().find('td.td_or_cell').length;
+            let colSpanCount = tableBodyobj.find('.wpt-tr-tag').first().find('td.td_or_cell').length;
             let foundRowCount = foundRow.length;
             let notFundMsg = config_json.product_not_founded;
             
@@ -1433,10 +1286,10 @@ jQuery(function($) {
                 $('.wpt-my-pagination-' + temp_number).hide();//wpt_filter_reset
             }
             //if not found available from before, we will remove it first.
-            $('#table_id_' + temp_number + ' table#wpt_table tbody tr.product-not-found-tr').remove();
+            $('#table_id_' + temp_number + ' #wpt_table.wpt-table-tag tbody .wpt-tr-tag.product-not-found-tr').remove();
             if(foundRowCount < 1){
                 let newRotHtml = "<tr class='product-not-found-tr'><td colspan='" + colSpanCount + "'><div class='wpt_product_not_found'>" + notFundMsg + "</div></td></tr>";
-                $('#table_id_' + temp_number + ' table#wpt_table tbody').append(newRotHtml)
+                $('#table_id_' + temp_number + ' #wpt_table.wpt-table-tag tbody').append(newRotHtml)
             }
             //here was remove notFound on else. we remove it becuase, we have added at the begining always
            
@@ -1461,32 +1314,25 @@ jQuery(function($) {
          * Mainly for shortmessage field
          */
         $('body').on('change', '.wpt_row .message', function() {
-                var temp_number = $(this).parents('tr.wpt_row').data('temp_number');
+                var temp_number = $(this).parents('.wpt-tr-tag.wpt_row').data('temp_number');
                 var msg = $(this).val();
-                var product_id = $(this).parents('tr').data('product_id');
+                var product_id = $(this).parents('.wpt-tr-tag').data('product_id');
             
-                var thisRow = '#table_id_' + temp_number + ' tr.product_id_' + product_id;
+                var thisRow = '#table_id_' + temp_number + ' .wpt-tr-tag.product_id_' + product_id;
                 $( thisRow + ' .message').val(msg);
         });
         
-        /**
-         * keyup is actually for total price live changing 
-         * When someone type quantity then total price will change live 
-         * if($('#table_id_' + table_id + ' .wpt_total').length > 0){
-                inputBoxChangeHandle();
-            }
-         */
-        // $(document).on('keyup','.wpt_row input.input-text.qty.text', inputBoxChangeHandle);
+
         $(document).on('keyup','.wpt_row input.input-text.qty.text', oneSecondDelay(inputBoxChangeHandle,1500));
  
         $(document.body).on('change', '.wpt_row input.input-text.qty.text', inputBoxChangeHandle);
         function inputBoxChangeHandle() {
 
-            var temp_number = $(this).parents('tr.wpt_row').data('temp_number');
+            var temp_number = $(this).parents('.wpt-tr-tag.wpt_row').data('temp_number');
             var Qty_Val = $(this).val();
-            var product_id = $(this).parents('tr').data('product_id');
+            var product_id = $(this).parents('.wpt-tr-tag').data('product_id');
         
-            var thisRow = '#table_id_' + temp_number + ' tr.product_id_' + product_id;
+            var thisRow = '#table_id_' + temp_number + ' .wpt-tr-tag.product_id_' + product_id;
             var outofstockVal = $(thisRow).hasClass("stock_status_outofstock");
             if(outofstockVal){
                 Qty_Val = 0;
@@ -1549,9 +1395,7 @@ jQuery(function($) {
 
             $('.yith_request_temp_' + temp_number + '_id_' + product_id).attr('data-quantity', Qty_Val);
             $('#table_id_' + temp_number + ' .product_id_' + product_id + ' .wpt_total_item.total_general strong').html(newPrice);
-            // $('tr.stock_status_outofstock .wpt_total_item.total_general strong').html("00");
-            //$(target_row_id + ' a.add_to_cart_button').attr('data-quantity', Qty_Val); //wpt_total_item total_general
-            
+
             updateCheckBoxCount(temp_number);
         }
 
@@ -1608,11 +1452,11 @@ jQuery(function($) {
             var itemAmount = 0;
             var itemCountSystem = config_json.item_count;
             
-            $('table.wpt_temporary_table_' + temp_number + ' tr.wpt_row').removeClass('wpt_selected_tr');
+            $('table.wpt_temporary_table_' + temp_number + ' .wpt-tr-tag.wpt_row').removeClass('wpt_selected_tr');
             
             $('#table_id_' + temp_number + ' input.enabled.wpt_tabel_checkbox:checked').each(function() { //wpt_td_checkbox
                 var product_id = $(this).data('product_id');
-                $('table.wpt_temporary_table_' + temp_number + ' tr.wpt_row#product_id_' + product_id).addClass('wpt_selected_tr');
+                $('table.wpt_temporary_table_' + temp_number + ' .wpt-tr-tag.wpt_row#product_id_' + product_id).addClass('wpt_selected_tr');
                 var items = $('#table_id_' + temp_number + ' tr#product_id_' + product_id).attr('data-quantity');
                 items = parseFloat(items);
                 if(items <= 0){
@@ -1674,7 +1518,7 @@ jQuery(function($) {
         });
         
         function uncheckAllCheck(temp_number){
-            var selectedCheckBox = $('#table_id_' + temp_number + ' input[type=checkbox]');
+            var selectedCheckBox = $('#table_id_' + temp_number + ' .all_check_header input[type=checkbox],#table_id_' + temp_number + ' .wpt_table_tag_wrapper input[type=checkbox]');
             selectedCheckBox.each(function(){
                 if($(this).is(':checked')){
                     $(this).trigger('click');
@@ -1700,7 +1544,7 @@ jQuery(function($) {
             value_size = value.length;
         
             var target_table = '#table_id_' + temp + ' #wpt_table';
-            $(target_table + ' tr.visible_row').each(function () {
+            $(target_table + ' .wpt-tr-tag.visible_row').each(function () {
                 text = $(this).text();
                 text = text.replace(/[\u200B-\u200D\uFEFF]/g, ''); // Removing Zero Width Space
                 text = text.toLowerCase();
@@ -1740,7 +1584,7 @@ jQuery(function($) {
         $(window).on('wpt_changed_variations',function(e,Attrs){
             if( Attrs.status ){
                 var product_id = Attrs.product_id;
-                var quoteElm = $('tr.product_id_'+product_id + ' td.wpt_quoterequest a.wpt_yith_add_to_quote_request');
+                var quoteElm = $('.wpt-tr-tag.product_id_'+product_id + ' .wpt-td-tag.wpt_quoterequest a.wpt_yith_add_to_quote_request');
                 try{
                     var response_msg = quoteElm.data('msg');
                     quoteElm.html(response_msg.text);
@@ -1767,7 +1611,7 @@ jQuery(function($) {
             }
             var msg = $(this).data('msg');
             var response_msg = $(this).attr('data-response_msg');
-            var type = $(this).closest('tr.wpt_row').data('type')
+            var type = $(this).closest('.wpt-tr-tag.wpt_row').data('type')
             
             if(type !== 'variable' && response_msg !== ''){
                 showAlert(response_msg);
@@ -1779,14 +1623,14 @@ jQuery(function($) {
             var add_to_cart_info;
             var wp_nonce = $(this).data('wp_nonce');
             var product_id = $(this).data('product_id');
-            var parent_id = $(this).closest('tr.wpt_row').data('parent_id');
+            var parent_id = $(this).closest('.wpt-tr-tag.wpt_row').data('parent_id');
 
             var quantity = $(this).attr('data-quantity');
             var quote_data = $(this).attr('data-quote_data');
             var yith_browse_list = $(this).data('yith_browse_list');
             
             
-            var temp_number = $(this).closest('tr.wpt_row').data('temp_number');
+            var temp_number = $(this).closest('.wpt-tr-tag.wpt_row').data('temp_number');
             var addToCartSelector = $('#table_id_' + temp_number + ' #product_id_' + product_id + ' a.wpt_product_title_in_td');
             var tableRow = $('#table_id_' + temp_number + ' #product_id_' + product_id );
             
@@ -1866,7 +1710,7 @@ jQuery(function($) {
                 var taxArray = new Array();
                 var taxValArray = new Array();
                 taxArray.sort();
-                $('#table_id_' + temp_number + ' tbody tr').each(function(){
+                $('#table_id_' + temp_number + ' .wpt-tbody-tag .wpt-tr-tag').each(function(){
                     var tax = $(this).data(key);
                     if(tax && tax !== ''){
                         tax = tax.replace(/,\s*$/, "");
@@ -1925,6 +1769,8 @@ jQuery(function($) {
         }
 
         /**
+         * sort order organization
+         * column sort sorting
          * Colunm Sorting Option
          * js base column sorting.
          * N.B: you have to enable it from Configuration page.
@@ -1932,14 +1778,15 @@ jQuery(function($) {
          * @since 2.8
          * @date 26.7.2018
          */
-        $(document.body).on('click','div.wpt_column_sort table.wpt_product_table thead tr th',function(){
+        $(document.body).on('click','div.wpt_column_sort .wpt-table-tag.wpt_product_table .wpt-thead-tag .wpt-tr-tag .wpt-th-tag',function(){
 
+            
             var unq_id = $(this).closest('div.wpt-wrap').data('unique_id');
 
             var class_for_sorted = 'this_column_sorted';
             var temp_number = $(this).parent().data('temp_number');
-            var target_class = '.' + $(this).attr('class').split(' ').join('.');
-            // var target_table_wrapper_id = '#table_id_' + temp_number;
+            var target_class = '.' + $(this).data('target_class');
+
             var target_table_wrapper_id = "div#table_id_" + temp_number + "[data-unique_id='" + unq_id + "']";
             var thisColObject = $(this);
             var status = false;
@@ -1947,7 +1794,8 @@ jQuery(function($) {
                 '.wpt_quantity',
                 '.wpt_check',
             ];
-            var number_class = $('td'+target_class + '>.text_with_number');//.find('.text_with_number');
+            
+            var number_class = $('.wpt-td-tag'+target_class + '>.text_with_number');//.find('.text_with_number');
             var content_type = 'normal';
             if(number_class.length > 0 || target_class.search('.wpt_serial_number') != -1 || target_class.search('.wpt_product_id') != -1 || target_class.search('.wpt_total') != -1 ){
                 content_type = 'number';
@@ -1982,17 +1830,19 @@ jQuery(function($) {
                 $(target_table_wrapper_id + ' .' +class_for_sorted).removeClass(class_for_sorted);
                 
                 //Again Class Reform after remove class
-                target_class = '.' + $(this).attr('class').split(' ').join('.');
+                target_class = '.' + $(this).data('target_class');
 
                 var contentHTMLArray = [];
-                var currentColumnObject = $(target_table_wrapper_id + ' table tbody td' + target_class);
+                var currentColumnObject = $(target_table_wrapper_id + ' .wpt-table-tag .wpt-tbody-tag .wpt-td-tag' + target_class);
+
+                //div#table_id_124[data-unique_id='dAtlfogymulaaCiesrIlosoS'] table tbody td.wpt_product_title 
 
                 currentColumnObject.each(function(index){
                     
                     
                     var text,
                     html = '', 
-                    product_id = $(this).parent('tr').data('product_id');
+                    product_id = $(this).parent('.wpt-tr-tag').data('product_id');
                     text = $(this).text();
                     text = $.trim(text);
                     if(content_type == 'price'){
@@ -2041,7 +1891,7 @@ jQuery(function($) {
                   });
 
                 //Backed HTML Data
-                $(target_table_wrapper_id + ' table>tbody').html(finalHTMLData);
+                $(target_table_wrapper_id + ' .wpt-table-tag > .wpt-tbody-tag').html(finalHTMLData);
 
                 $(target_table_wrapper_id + ' ' +target_class).addClass(class_for_sorted);
                 
@@ -2102,10 +1952,10 @@ jQuery(function($) {
         noticeBoard.html('');
     }
    
-    $(document).on('submit','div.advance_table_wrapper table.advance_table.wpt_product_table form',function(e){
+    $(document).on('submit','div.advance_table_wrapper .wpt-table-tag.advance_table.wpt_product_table form',function(e){
             footerCartAnimation();
             WPT_BlankNotice();
-            var product_id = $(this).parents('tr').data('product_id');
+            var product_id = $(this).parents('.wpt-tr-tag').data('product_id');
             var thisButton = $('tr#product_id_' + product_id + ' .wpt_action button.single_add_to_cart_button');
             if(thisButton.hasClass('disabled')){
                 return;
@@ -2116,7 +1966,7 @@ jQuery(function($) {
             var data_json = $(this).closest('.wpt-wrap').data('basic_settings');
             var ajax_action = data_json.ajax_action;
 
-            var thisRow = $(this).closest('tr.wpt-row');
+            var thisRow = $(this).closest('.wpt-tr-tag.wpt-row');
             var messageBox = thisRow.find('input.wpt_custom_message');
             var Bubble = thisRow.find('.wpt_ccount');
             if(Bubble.length == 0){
@@ -2220,8 +2070,8 @@ jQuery(function($) {
                 // thisButton.addClass( 'loading' );
                 
                 var form = $(fullSelcetor);
-                var title = $(this).parents('tr').data('title');
-                var additional_json = $(this).parents('tr').attr('additional_json');
+                var title = $(this).parents('.wpt-tr-tag').data('title');
+                var additional_json = $(this).parents('.wpt-tr-tag').attr('additional_json');
                 var url = form.attr('action');//ajax_url;//
 
                 let eachProductData = 'product_id=' + product_id + '&' + form.serialize();
@@ -2328,8 +2178,8 @@ jQuery(function($) {
             var temp_number = data.table_id;
             uncheckAllCheck(temp_number);
         });
-        $(document).on( 'reset_data', 'div.advance_table_wrapper table.advance_table.wpt_product_table form.cart', function() {
-            var thisRow = $(this).parents('tr.wpt_row');
+        $(document).on( 'reset_data', 'div.advance_table_wrapper .wpt-table-tag.advance_table.wpt_product_table form.cart', function() {
+            var thisRow = $(this).parents('.wpt-tr-tag.wpt_row');
 
             var temp_number = thisRow.data('temp_number');
             var product_id = thisRow.data('product_id');
@@ -2353,12 +2203,12 @@ jQuery(function($) {
             skuTDobj.find('div.wpt_sku').html(sku);
             
         });
-        $(document).on( 'found_variation', 'div.advance_table_wrapper table.advance_table.wpt_product_table form.cart', function( event, variation ) {
-            var thisRow = $(this).parents('tr.wpt_row');
+        $(document).on( 'found_variation', 'div.advance_table_wrapper .wpt-table-tag.advance_table.wpt_product_table form.cart', function( event, variation ) {
+            var thisRow = $(this).parents('.wpt-tr-tag.wpt_row');
 
             var temp_number = thisRow.data('temp_number');
             var product_id = thisRow.data('product_id');
-            var my_product_id = $(event.currentTarget).parents('tr.wpt_row').data('product_id');
+            var my_product_id = $(event.currentTarget).parents('.wpt-tr-tag.wpt_row').data('product_id');
             
             var targetThumbs = $('#table_id_' + temp_number + ' #product_id_' + product_id + ' wpt_thumbnails img');
             var quoted_target = 'yith_request_temp_' + temp_number + '_id_' + product_id;
@@ -2428,7 +2278,7 @@ jQuery(function($) {
         
         $('.wpt-wrap').each(function(){
             var table_id = $(this).data('temp_number');
-            var tableEl = $(this).find('table.wpt_product_table');
+            var tableEl = $(this).find('.wpt-table-tag.wpt_product_table');
             var width = tableEl.width();
             $('.wpt_second_wrapper.wpt_second_wrapper_' + table_id + ' div.wpt_second_content').css('width',width);
         });
@@ -2438,115 +2288,7 @@ jQuery(function($) {
         });
         $(".wpt_second_wrapper").scroll(function () {
             $(".wpt_table_tag_wrapper").scrollLeft($(".wpt_second_wrapper").scrollLeft());
-        });
-        
-        // arrangingTDContentForMobile();
-        function arrangingTDContentForMobile(){
-            return;
-            $('table.mobile_responsive tr.wpt_row').each(function(){
-                return;
-                var already_updated = $(this).attr('already');
-                if((typeof already_updated === 'undefined')){
-                    $(this).attr('already','yes');
-
-                    var htmlDesc,htmlAction,htmlImg,htmlCfTax;
-                    var actionElement = $(this).children('td.wpt_action');
-                    var productDescElement = $(this).children('td.wpt_product_title');
-                    if(!productDescElement.length){
-                        productDescElement = $(this).children('td').first();
-                        productDescElement.css('display','block');
-                    }
-                    
-                    htmlDesc = "";
-
-                    htmlDesc += "<div class='wpt_mobile_desc_part'>";
-                    $(this).children('td.wpt_for_product_desc').each(function(){
-                        var attr = "";
-                        $.each(this.attributes, function() {
-                            if(this.specified) {
-                                attr += ' ' + this.name + '="' + this.value + '"';
-                            }
-                        });
-                        htmlDesc += "<div " + attr + ">" + $(this).html() + "</div>";//"<div class='" + td_class + "'>" + $(this).html() + "</div>";
-
-                    });
-                    htmlDesc += "</div>"
-
-
-                    htmlImg = ""; //wpt_for_thumbs_desc
-
-                    $(this).children('td.wpt_for_thumbs_desc').each(function(){
-                        var attr = "";
-                        $.each(this.attributes, function() {
-                            if(this.specified) {
-                                attr += ' ' + this.name + '="' + this.value + '"';
-                            }
-                        });
-                        htmlImg += "<div " + attr + ">" + $(this).html() + "</div>";//"<div class='" + td_class + "'>" + $(this).html() + "</div>";
-
-                    });
-                    //htmlDesc += "</div>"
-
-
-
-                    htmlCfTax = "";
-                    $(this).children('td.wpt_custom_cf_tax').each(function(){
-                        var cf_tax_keyword = $(this).data('keyword');
-                        var cf_tax_columnName = $('th.' + cf_tax_keyword).html(); //undefined
-                        if(typeof cf_tax_columnName !== 'undefined'){
-                            cf_tax_columnName = "<span>" + cf_tax_columnName + ": </span>";
-                        }else{
-                            cf_tax_columnName = "";
-                        }
-                        
-                        var attr = "";
-                        $.each(this.attributes, function() {
-                            if(this.specified) {
-                                attr += ' ' + this.name + '="' + this.value + '"';
-                            }
-                        });
-                        htmlCfTax += "<div " + attr + ">" + cf_tax_columnName + $(this).html() + "</div>";//"<div class='" + td_class + "'>" + $(this).html() + "</div>";
-
-                    });
-                    if(htmlCfTax !== ""){
-                        htmlDesc += "<div class='wpt_custom_cf_tax_wrapper'>";
-                        htmlDesc += htmlCfTax;
-                        htmlDesc += "</div>";
-                    }
-                    
-                    htmlAction = "";
-                    $(this).children('td.wpt_for_product_action').each(function(){
-                        var attr = "";
-                        $.each(this.attributes, function() {
-                            if(this.specified && this.name !== 'data-price_html') {
-                                attr += ' ' + this.name + '="' + this.value + '"';
-                            }
-                        });
-                        htmlAction += "<div " + attr + ">" + $(this).html() + "</div>";//"<div class='" + td_class + "'>" + $(this).html() + "</div>";
-
-                    });
-
-                    if(actionElement.length > 0){
-                        actionElement.prepend(htmlAction);
-                    }else{
-                        htmlDesc += "<div class='wpt_conditon_desc_load'>";
-                        htmlDesc += htmlAction;
-                        htmlDesc += "<div>";
-                    }
-                    productDescElement.prepend(htmlImg);
-                    productDescElement.append(htmlDesc);
-                }
-
-            });
-
-            //Fix checkbox issue for .wpt_for_product_desc.wpt_check
-            $('table td div.wpt_for_product_desc.wpt_check').each(function(){
-                var id = $(this).children('input.wpt_tabel_checkbox').attr('id') + "_mob";
-                $(this).children('input.wpt_tabel_checkbox').attr('id',id);
-                $(this).children('label').attr('for',id);
-
-            });
-        }     
+        }); 
         
         
         /**
@@ -2559,10 +2301,9 @@ jQuery(function($) {
         $('.wpt_product_table input.input-text.qty.text').trigger('change');
         
          $('.yith-ywraq-add-to-quote').each(function(){
-             let qty = $(this).closest('tr').data('quantity');
+             let qty = $(this).closest('.wpt-tr-tag').data('quantity');
             $(this).append('<input type="hidden" class="input-text qty text" value="' + qty + '">');
         });
-        
         
     });
 });

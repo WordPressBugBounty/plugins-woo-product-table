@@ -350,6 +350,40 @@ foreach($terms as $term){
                     
                 </td>
             </tr>
+            <tr>
+                <th>
+                    <label class="wpt_label" for="wpt_taxonomy_filter_type"><?php esc_html_e( 'Filter Type', 'woo-product-table' ); ?></label>
+                </th>
+                <td>
+                    <div class="custom-select-box-wrapper sfl-auto-gen-box">
+                        <?php
+                        $filter_type_name = 'search_n_filter[taxonomy_filter_type]';
+                        $filter_type_id = 'wpt_taxonomy_filter_type';
+                        $filter_type_current = $meta_search_n_filter['taxonomy_filter_type'] ?? 'checkbox';
+                        $filter_type_options = [
+                            'checkbox' => esc_html__( 'Checkbox', 'woo-product-table' ),
+                            'select' => esc_html__( 'Select Dropdown', 'woo-product-table' ),
+                            
+                        ];
+                        ?>
+
+                        <input type="hidden" name="<?php echo esc_attr( $filter_type_name ); ?>"
+                         value="<?php echo esc_attr( $filter_type_current ); ?>"
+                         class="custom-select-box-input" id="<?php echo esc_attr( $filter_type_id ); ?>">
+                        <div class="wpt-custom-select-boxes">
+                            <?php foreach ($filter_type_options as $value => $label): ?>
+                                <div class="wpt-custom-select-box <?php echo esc_attr( $filter_type_current === $value ? 'active' : '' ); ?>" data-value="<?php echo esc_attr($value); ?>">
+                                    <?php echo esc_html( $label ); ?>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <p class="message">
+                            <b><?php echo esc_html__( 'Tips:', 'woo-product-table' ); ?></b>
+                            <span><?php echo esc_html__( 'Choose how taxonomy filters appear: as dropdown selects or checkboxes with selected items display.','woo-product-table' ); ?></span>
+                        </p>
+                    </div>
+                </td>
+            </tr>
         </table>
 
     <?php

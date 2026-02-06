@@ -128,20 +128,7 @@ function wpt_get_pro_discount_message()
 }
 
 
-/**
- * check pro available or not
- * 
- * @since 3.0.1
- * @by Saiful
- * 
- * @return boolean true|false
- */
-function wpt_is_pro()
-{
-    if (defined('WPT_PRO_DEV_VERSION')) return true;
 
-    return false;
-}
 
 /**
  * Check if the user is a new user or not

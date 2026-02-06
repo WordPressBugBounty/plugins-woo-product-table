@@ -8,6 +8,13 @@
 body.wpt-zero-body #wpcontent {
     padding-left: 0;
 }
+.wrap,.wrap.fs-section{
+    margin: 30px;
+}
+body.edit-php.post-type-wpt_product_table .wrap,
+body.post-php.post-type-wpt_product_table .wrap{
+    margin: 0 !important;
+}
 body.tracker-added.allow-tracker-body #wpbody-content {
     display: none;
 }
@@ -60,7 +67,6 @@ body .wpt-header, body .wpt-content {
     flex-direction: row;
 }
 
-.wpt-header.wpt-clearfix {}
 
 .wpt-main-title-secondary {
     padding-left: 9px;
@@ -71,7 +77,7 @@ body.already-added-tracker .wpt-main-title.wpt-main-title-secondary {
     border-right: 1px solid #6868681f;
 }
 .wpt-main-title h2.wpt-ntitle {
-    font-size: 25px;
+    font-size: 20px;
     font-weight: normal;
     color: #4c4c4c;
     padding: 0;
@@ -84,7 +90,6 @@ body.already-added-tracker .wpt-main-title.wpt-main-title-secondary {
 body.already-added-tracker .wpt-main-title.wpt-main-title-secondary h2.wpt-ntitle {
     color: #ababab;
 }
-.wpt-logo-area {}
 
 .wpt-logo-area img.wpt-brand-logo {
     height: 39px;
@@ -437,9 +442,6 @@ Screen and devicewise Custom CSS
     .wrap.wpt_wrap.wpt-content {
         margin: 0 20px;
     }
-    .wpt-header {
-        
-    }
 }
 
 @media (min-width: 992px) {
@@ -447,7 +449,7 @@ Screen and devicewise Custom CSS
         padding-left: 25px;
     }
     .wpt-logo-wrapper-area {
-        gap: 0 25px;
+        gap: 0 15px;
     }
 
     .wrap.wpt_wrap.wpt-content {
@@ -636,7 +638,6 @@ Device and Screen wise CSS end Here
     left: 60%;
 }
 
-.wpt-section-panel .on {}
 
 .wpt-section-panel input:checked+.slider .on {
     display: block;

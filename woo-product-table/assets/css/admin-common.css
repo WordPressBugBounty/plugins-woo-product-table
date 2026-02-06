@@ -30,7 +30,6 @@
     border-bottom: 1px solid #ecececc9;
 }
 
-h1.with-background.dark-background {}
 .ultraaddons .no-border-bottom, .ultraaddons-panel .no-border-bottom {
     border-bottom: 0 none;
 }
@@ -306,9 +305,6 @@ h1.with-background.dark-background {}
     font-weight: bold;
     left: 60%;
 }
-.ultraaddons .on {
-    
-}
 
 .ultraaddons input:checked+ .slider .on{display: block;}
 
@@ -360,12 +356,7 @@ h1.with-background.dark-background {}
     display: block;
     clear: both;
 }
-.ultraaddons-feature-panel .col-left{
 
-}
-.ultraaddons-feature-panel .col-right{
-    
-}
 .ultraaddons .ultraaddons-feature-panel h2 {
     text-transform: inherit;
     margin: 20px 0;

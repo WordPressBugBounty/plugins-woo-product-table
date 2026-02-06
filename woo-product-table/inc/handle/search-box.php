@@ -7,6 +7,7 @@ class Search_Box{
     public static $reset_button;
     public static $cf_search_box;
     public static $taxonomy_keywords;
+    public static $taxonomy_filter_type;
 
     /**
      * Extra Field on Search box
@@ -18,18 +19,24 @@ class Search_Box{
      */
     public static $fields;
     public static function render( Shortcode $shortcode ){
+        // return;
         $behavior = $shortcode->atts['behavior'] ?? '';
         // if( $behavior !== 'normal' && ( is_shop() || is_product_taxonomy() || is_product_category() ) ) return;
         self::$reset_button = "<button class='wpt-query-reset-button' title='" . __('Reset','woo-product-table') . "'> <i class='wpt-spin3'></i></button>"; //end of .search_single
         self::$cf_search_box = $shortcode->search_n_filter['cf_search_box'] ?? '';
         self::$taxonomy_keywords = $shortcode->search_n_filter['taxonomy_keywords'] ?? [];
+        self::$taxonomy_filter_type = $shortcode->search_n_filter['taxonomy_filter_type'] ?? 'select';
         self::$fields = $shortcode->search_n_filter['fields'] ?? [];
         
         $config_value = $shortcode->_config;
 
         $search_box_title = $config_value['search_box_title'] ?? '';
         $html = false;
-        $html .= "<div id='search_box_{$shortcode->table_id}' class='wpt_search_box search_box_{$shortcode->table_id}'>";
+        
+        // Add filter type class for styling purposes
+        $filter_type_class = self::$taxonomy_filter_type === 'checkbox' ? 'wpt-filter-type-checkbox' : 'wpt-filter-type-select';
+        
+        $html .= "<div id='search_box_{$shortcode->table_id}' class='wpt_search_box search_box_{$shortcode->table_id} {$filter_type_class}'>";
         $html .= '<div class="search_box_fixer">'; //Search_box inside fixer
         $html .= '<h3 class="search_box_label">' . sprintf( $search_box_title, '<small>','</small>' ) . '</h3>';
         $html .= "<div class='search_box_wrapper'>";
@@ -50,7 +57,7 @@ class Search_Box{
             $search_order_placeholder = $config_value['search_box_searchkeyword'] ?? '';//__( 'Search keyword', 'woo-product-table' );
             $html_inputBox .= '<div class="search_single_search_by_keyword">';// /.search_single_column 
             $html_inputBox .= '<label class="search_keyword_label single_keyword" for="single_keyword_' . $shortcode->table_id . '">' . $single_keyword . '</label>';
-            $html_inputBox .= '<input data-key="s" value="' . $search_keyword . '" class="query-keyword-input-box query_box_direct_value" id="single_keyword_' . $shortcode->table_id . '" value="" placeholder="' . $search_order_placeholder . '"/>';
+            $html_inputBox .= '<input data-key="s" value="' . esc_attr( $search_keyword ) . '" class="query-keyword-input-box query_box_direct_value" id="single_keyword_' . $shortcode->table_id . '" value="" placeholder="' . $search_order_placeholder . '"/>';
             $html_inputBox .= '</div>';// /.search_single_column  
         }
         
@@ -92,7 +99,12 @@ class Search_Box{
          */
         if( is_array( self::$taxonomy_keywords ) && count( self::$taxonomy_keywords ) > 0 ){
             foreach( self::$taxonomy_keywords as $texonomy_name ){
-               $html .= wpt_texonomy_search_generator( $texonomy_name,$shortcode->table_id, $shortcode->search_n_filter ); 
+                // Use checkbox or select based on filter type setting
+                if ( self::$taxonomy_filter_type === 'checkbox' ) {
+                    $html .= wpt_checkbox_taxonomy_search_generator( $texonomy_name, $shortcode->table_id, $shortcode->search_n_filter );
+                } else {
+                    $html .= wpt_texonomy_search_generator( $texonomy_name, $shortcode->table_id, $shortcode->search_n_filter ); 
+                }
             }
         }
 
@@ -121,9 +133,11 @@ class Search_Box{
 
         
         // $html .= '<button data-type="query" data-temp_number="' . $shortcode->table_id . '" id="wpt_query_search_button_' . $shortcode->table_id . '" class="button wpt_search_button query_button wpt_query_search_button wpt_query_search_button_' . $shortcode->table_id . '">' . $config_value['search_button_text'] . '</button>';
+        //Issue Fixed #371
+        $search_button_text = $config_value['search_button_text'] ?? __('Search','woo-product-table');
         
         //New and Testing
-        $html .= '<button data-table_id="' . $shortcode->table_id . '" id="wpt_query_search_button_' . $shortcode->table_id . '" class="button wpt-search-products wpt_query_search_button_' . $shortcode->table_id . '">' . $config_value['search_button_text'] . '</button>';
+        $html .= '<button data-table_id="' . $shortcode->table_id . '" id="wpt_query_search_button_' . $shortcode->table_id . '" class="button wpt-search-products wpt_query_search_button_' . $shortcode->table_id . '">' . $search_button_text . '</button>';
         
         
         $html .= '</div>';//End of .search_box_fixer

@@ -75,7 +75,7 @@ if( !function_exists( 'wpt_configuration_page_head' ) ){
                     <img src="<?php echo esc_url( $brand_logo ); ?>" class="wpt-brand-logo">
                     Woo Product Table 
                     
-                    <span class="plugin-version">v <?php echo esc_attr( WPT_Product_Table::getVersion() ); ?></span>
+                    <span class="plugin-version">v <?php echo esc_attr( WPT_DEV_VERSION ); ?></span>
                     <?php if(method_exists('WOO_Product_Table', 'getVersion')){ ?>
                         <span class="plugin-version" title="Pro Version">v <?php echo esc_html( WOO_Product_Table::getVersion() ); ?></span></h1>
                     <?php } ?>
@@ -99,7 +99,7 @@ if( !function_exists( 'wpt_configuration_page_version_data' ) ){
      */
     function wpt_configuration_page_version_data(){
         ?>
-        <input name="data[plugin_version]" type="hidden" value="<?php echo esc_html( WPT_Product_Table::getVersion() ); ?>">
+        <input name="data[plugin_version]" type="hidden" value="<?php echo esc_html( WPT_DEV_VERSION ); ?>">
         <input name="data[plugin_name]" type="hidden" value="<?php echo esc_html( WPT_Product_Table::getName() ); ?>"> 
             
          <?php

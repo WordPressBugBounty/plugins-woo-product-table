@@ -32,6 +32,10 @@ class Row extends Table_Base{
     public $td_keyword;
     public $_device;
 
+    //table row tag agian here will come from shortcode class inside constructor
+    public $tr_tag;
+    public $td_tag;
+
     /**
      * We have some Variable Available inside 
      * Item page or Inside TD file
@@ -76,7 +80,6 @@ class Row extends Table_Base{
      * @var string
      */
     public $row_class = '';
-    public $td_tag = 'td';
     public $generated_td_start;
     public $generated_td_end;
     public $wp_force;
@@ -118,20 +121,23 @@ class Row extends Table_Base{
         $this->product_title = $this->product_data['name'] ?? '';
         $this->filter = $shortcode->filter;
 
-        if($shortcode->generated_row){
-            $this->td_tag = 'div';
+        $this->tr_tag = $shortcode->tr_tag;
+        $this->td_tag = $shortcode->td_tag;
 
-            $this->is_column_label = $shortcode->is_column_label;
+        // if($shortcode->generated_row){
+        //     $this->td_tag_here = 'div';
 
-            // Wiil add 'wpt-mobile-label-show' claas which will help to display column label in mobile @by Fazle Bari  
-            if( $this->is_column_label =='show' ){
-                $this->generated_td_start = '<td class="wpt-replace-td-in-tr wpt-mobile-label-show">';
-            }else{
-                $this->generated_td_start = '<td class="wpt-replace-td-in-tr">';
-            }
+        //     $this->is_column_label = $shortcode->is_column_label;
+
+        //     // Wiil add 'wpt-mobile-label-show' claas which will help to display column label in mobile @by Fazle Bari  
+        //     if( $this->is_column_label =='show' ){
+        //         $this->generated_td_start = '<' . $this->td_tag_here . ' class="wpt-td-tag wpt-replace-td-in-tr wpt-mobile-label-show">';
+        //     }else{
+        //         $this->generated_td_start = '<' . $this->td_tag_here . ' class="wpt-td-tag wpt-replace-td-in-tr">';
+        //     }
             
-            $this->generated_td_end = '</td>';
-        }
+        //     $this->generated_td_end = '</' . $this->td_tag_here . '>';
+        // }
 
         if($this->filter){
             $this->generate_taxo_n_row_attr( $this->filter );
@@ -233,12 +239,13 @@ class Row extends Table_Base{
         extract($this->data_for_extract());
 
         ?>
-        <tr
-        class="<?php echo esc_attr( $this->tr_class ); ?>"
+        <<?php echo esc_html( $this->tr_tag ); ?>
+        class=" wpt-tr-tag <?php echo esc_attr( $this->tr_class ); ?> page_number-<?php echo esc_attr( $this->page_number ); ?>"
         data-title="<?php echo esc_attr( $this->product_title ); ?>"
         id="product_id_<?php echo esc_attr( $this->product_id ); ?>"
         data-product_id="<?php echo esc_attr( $this->product_id ); ?>"
         data-temp_number="<?php echo esc_attr( $this->table_id ); ?>"
+        page_number="<?php echo esc_attr( $this->page_number ); ?>"
         data-type="<?php echo esc_attr( $this->product_type ); ?>"
         data-parent_id="<?php echo esc_attr( $this->product_parent_id ); ?>"
         data-quantity="<?php echo esc_attr( $this->default_quantity ); ?>"
@@ -326,7 +333,7 @@ class Row extends Table_Base{
              */
             $td_class = Table_Attr::td_class($keyword, $this);
             ?>
-            <<?php echo esc_html( $this->td_tag ); ?> class="td_or_cell <?php echo esc_attr($class_iner_avail . ' ' .$td_class ); ?>"
+            <<?php echo esc_html( $this->td_tag ); ?> class=" wpt-td-tag td_or_cell <?php echo esc_attr($class_iner_avail . ' ' .$td_class ); ?>"
             data-keyword="<?php echo esc_attr( $keyword ); ?>" 
             data-temp_number="<?php echo esc_attr( $this->table_id ); ?>" 
             data-sku="<?php echo esc_attr( $this->product_sku ); ?>"
@@ -412,7 +419,7 @@ class Row extends Table_Base{
         }
         if(! empty( $this->generated_td_end ) ) echo wp_kses_post( $this->generated_td_end );
         ?>
-        </tr>
+        </<?php echo esc_html( $this->tr_tag ); ?>>
         <?php
     }
 

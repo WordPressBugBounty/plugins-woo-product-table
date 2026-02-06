@@ -77,14 +77,15 @@ $wpt_product_cat_object = get_terms('product_cat');
         </tr>
 
         <?php
-
+        // dd($supported_terms);
         foreach( $supported_terms as $key => $each ){
 
             $term_key = $key;
             $term_name = $each;
             $term_obj = get_terms( $term_key );
             if( ! is_array( $term_obj ) || ( is_array($term_obj) && count($term_obj) < 1 ) ){
-                continue;
+                // dd($term_obj);
+                // continue;
             }
             
             $selected_term_ids = isset( $data['terms'][$term_key] ) && !empty( $data['terms'][$term_key] ) ? $data['terms'][$term_key] : false;

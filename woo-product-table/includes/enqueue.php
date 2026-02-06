@@ -14,13 +14,22 @@ if( !function_exists( 'wpt_enqueue' ) ){
      * @since 1.0.0
      */
    function wpt_enqueue(){
+        global $post;
+        $pass = is_a($post, 'WP_Post') && has_shortcode($post->post_content, 'Product_Table') || is_woocommerce() || ( is_a($post, 'WP_Post') && $post->post_type === 'wpt_product_table' ) || ( is_a($post, 'WP_Post') && strpos( $post->post_content, 'wpt' ) !== false );
 
-       wpt_enqueue_common();
+        if( ! $pass ) return;
+
+        wpt_enqueue_common();
        //Custom CSS Style for Woo Product Table's Table (Universal-for all table) and (template-for defien-table)
        wp_enqueue_style( 'wpt-universal', WPT_Product_Table::getPath('BASE_URL') . 'assets/css/universal.css', array(), WPT_DEV_VERSION, 'all' );
        
+       //Checkbox filter CSS for advanced search
+       wp_enqueue_style( 'wpt-checkbox-filter', WPT_Product_Table::getPath('BASE_URL') . 'assets/css/elements/checkbox-filter.css', array(), WPT_DEV_VERSION, 'all' );
+       
        //jQuery file including. jQuery is a already registerd to WordPress
        wp_enqueue_script( 'jquery' );
+       wp_enqueue_script( 'wc-cart-fragments' );
+       wp_enqueue_script( 'wc-add-to-cart-variation' );
 
        ///custom JavaScript for Woo Product Table pro plugin
        wp_enqueue_script( 'wpt-custom-js', WPT_Product_Table::getPath('BASE_URL') . 'assets/js/custom.js', array( 'jquery','wc-cart-fragments','wc-add-to-cart-variation' ), WPT_DEV_VERSION, true );
@@ -69,10 +78,22 @@ if( !function_exists( 'wpt_enqueue' ) ){
            'return_quanity' => apply_filters( 'wpto_qty_return_quanity', true ),
            'search_select_placeholder' => wpt_get_config( 'search_order_placeholder' ),//esc_html__( 'Select inner Item.', 'woo-product-table' ),
            'notice_timeout' => 3000,
-           'nonce'          => wp_create_nonce( WPT_PLUGIN_FOLDER_NAME )
+           'nonce'          => wp_create_nonce( WPT_PLUGIN_FOLDER_NAME ),
+           // Export feature data
+           'export' => array(
+               'is_pro'             => wpt_is_pro(),
+               'exporting_text'     => __( 'Exporting...', 'woo-product-table' ),
+               'export_success'     => __( 'Export completed successfully!', 'woo-product-table' ),
+               'export_error'       => __( 'Export failed. Please try again.', 'woo-product-table' ),
+               'premium_required'   => __( 'This export format requires the premium version.', 'woo-product-table' ),
+               'upgrade_prompt'     => __( 'Would you like to upgrade to Premium?', 'woo-product-table' ),
+               'upgrade_url'        => 'https://wooproducttable.com/pricing/',
+           ),
            );
        $WPT_DATA = apply_filters( 'wpto_localize_data', $WPT_DATA );
        wp_localize_script( 'wpt-custom-js', 'WPT_DATA', $WPT_DATA );
+       wp_localize_script( 'wpt-js-plugin', 'WPT_DATA', $WPT_DATA );
+       wp_localize_script( 'wpt-custom-pro-js', 'WPT_DATA', $WPT_DATA );
 
        /**
         * Compatible with other plugin

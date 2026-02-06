@@ -118,7 +118,7 @@ li#menu-posts-wpt_product_table ul.wp-submenu li:hover a[href='https://wooproduc
     flex-flow: row wrap-reverse;
     align-items: center;
 }
-.anywhere-notice {}
+
 
 .anywhere-notice h1 {
     font-size: 16px;
@@ -281,3 +281,12 @@ a.wpt-wp-plugin-list-link:hover {
 .fieldwrap .anywhere-notice.ca-notice.notice-offer .ca-msg-text p.ca-links-collection {
     display: none;
 }
+
+.wpt-offer-notice { border-left:4px solid #e8655b; background:#fff9f8; padding:12px 15px; margin-top:10px; display:flex; align-items:center; }
+.wpt-offer-logo img { border-radius:6px; }
+.wpt-offer-message { font-size:14px; color:#333; }
+.wpt-offer-actions a { text-decoration:none; }
+.wpt-offer-btn { background:#d6453a; color:#fff; padding:7px 12px; border-radius:4px; display:inline-block; }
+.wpt-offer-btn-secondary { background:#fff; color:#333; padding:7px 12px; border-radius:4px; border:1px solid #ddd; display:inline-block; }
+.wpt-coupon-badge {background:#a9a9a9;color:#fff;padding:2px 6px;border-radius:3px;font-weight:bold;}
+.wpt-offer-notice .wpt-offer-message h3 {color: #060606;font-size: 16px;font-weight: bold;}

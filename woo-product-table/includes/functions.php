@@ -15,16 +15,61 @@ if( ! function_exists('dd') ){
      *
      * @param mixed ...$vals Variable number of arguments to be dumped.
      */
-	function dd( ...$vals){
-		if( ! empty($vals) && is_array($vals) ){
-			foreach($vals as $val ){
-				echo "<pre>";
-				var_dump($val);
-				echo "</pre>";
-			}
-		}
-	}
+	function dd(...$vals) {
+        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0];
+        $file = $backtrace['file'] ?? 'Unknown file';
+        $line = $backtrace['line'] ?? 'Unknown line';
+        echo '<div style="background: #e1e1e1;border-left: 3px solid #888;padding: 15px;margin: 15px 0;margin-left: 170px;font-family: monospace;border-radius: 6px;overflow-x: auto;">';
+        echo '<div style="margin-bottom: 10px;color: #3F51B5;">';
+        echo "🛠️ <strong>File:</strong> <span style='color:#8d8d8d;'>$file</span> on line <span style='color:#4b4b4b;'>$line</span>";
+        echo '</div>';
+        foreach ($vals as $val) {
+            ob_start();
+            var_dump($val);
+            $output = ob_get_clean();
+            // HTML entities
+            echo '<pre style="color: #777777;background: #ffffff9c;">' . htmlspecialchars($output) . '</pre>';
+        }
+        echo '</div>';
+    }
+
 }
+
+/**
+ * Check is premium version active or not
+ * 
+ * even old pro version(WC_Min_Max_Quantity) is active then also return true
+ *
+ * @return boolean
+ */
+function wpt_is_premium(){
+    if( defined( 'WPT_PRO_DEV_VERSION' ) ) return true;
+    return false;
+}
+/**
+ * Check is premium version installed or not
+ *
+ * @return boolean
+ */
+function wpt_is_premium_installed(){
+    if( defined( 'WPT_PRO_DEV_VERSION' ) ) return true;
+}
+
+/**
+ * check pro available or not
+ * 
+ * @since 3.0.1
+ * @by Saiful
+ * 
+ * @return boolean true|false
+ */
+if (!function_exists('wpt_is_pro')) {
+    function wpt_is_pro()
+    {
+        return wpt_is_premium();
+    }
+}
+
 
 if( !function_exists( 'wpt_column_setting_for_tax_cf' ) ){
     
@@ -525,19 +570,18 @@ if( ! function_exists( 'wpt_get_config_value' ) ){
  */
 function wpt_config_translate( $config_value, $table_ID = false ){
     if( ! is_array( $config_value ) ) return [];
-
-    $config_value = array_map( function( $value ){
+//     $config_value = array_map( function( $value ){
         
-        if(is_string( $value )) return __( $value, 'woo-product-table' );
-        return $value;
+//         if(is_string( $value )) return __( $value, 'woo-product-table' );
+//         return $value;
         
-    }, $config_value );
-
+//     }, $config_value );
     //Actually we will change this bellow filter keyword, removed o from wpt
     $config_value = apply_filters( 'wpt_get_config_value', $config_value, $table_ID );
 
     return $config_value;
 }
+
 
 /**
  * Displays or retrieves the HTML dropdown list of categories.
@@ -734,6 +778,169 @@ function wpt_wp_dropdown_categories( $args = '', $get_taxonomy = false ) {
 	}
 
 	return $output;
+}
+
+/**
+ * Generate checkbox-based taxonomy filter HTML.
+ *
+ * Creates a checkbox list for filtering products by taxonomy terms.
+ * Selected items are displayed with a remove (X) button.
+ *
+ * @since 8.2.0
+ * @author Saiful Islam <codersaiful@gmail.com>
+ *
+ * @param array $args Arguments for generating checkbox filter.
+ * @param array|bool $get_taxonomy Optional. Custom taxonomy terms array.
+ * @return string HTML output for checkbox filter.
+ */
+function wpt_checkbox_taxonomy_filter( $args = '', $get_taxonomy = false ) {
+    $defaults = array(
+        'orderby'           => 'name',
+        'order'             => 'ASC',
+        'hide_empty'        => 1,
+        'child_of'          => 0,
+        'hierarchical'      => 1,
+        'name'              => 'cat',
+        'id'                => '',
+        'class'             => 'wpt-checkbox-filter',
+        'taxonomy'          => 'category',
+        'hide_if_empty'     => false,
+        'value_field'       => 'term_id',
+        'data-key'          => false,
+        'table_id'          => '',
+    );
+
+    $parsed_args = wp_parse_args( $args, $defaults );
+
+    // Get terms for the taxonomy
+    $get_terms_args = $parsed_args;
+    unset( $get_terms_args['name'] );
+    unset( $get_terms_args['id'] );
+    unset( $get_terms_args['class'] );
+    unset( $get_terms_args['data-key'] );
+    unset( $get_terms_args['table_id'] );
+    
+    $categories = get_terms( $get_terms_args );
+
+    if ( is_array( $get_taxonomy ) && ! empty( $get_taxonomy ) ) {
+        $categories = $get_taxonomy;
+    }
+
+    if ( empty( $categories ) || is_wp_error( $categories ) ) {
+        return '';
+    }
+
+    $name     = esc_attr( $parsed_args['name'] );
+    $class    = esc_attr( $parsed_args['class'] );
+    $id       = $parsed_args['id'] ? esc_attr( $parsed_args['id'] ) : $name;
+    $data_key = $parsed_args['data-key'] ? esc_attr( $parsed_args['data-key'] ) : '';
+    $table_id = esc_attr( $parsed_args['table_id'] );
+
+    $output = "<div class='wpt-checkbox-filter-wrapper {$class}' data-key='{$data_key}' data-table-id='{$table_id}'>";
+    $output .= "<div class='wpt-checkbox-list'>";
+
+    foreach ( $categories as $category ) {
+        $term_id   = $category->term_id;
+        $term_name = esc_html( $category->name );
+        $term_slug = $category->slug;
+        $count     = $category->count;
+
+        $checkbox_id = "{$id}_{$term_id}";
+        
+        $output .= "<label class='wpt-checkbox-item' for='{$checkbox_id}'>";
+        $output .= "<input type='checkbox' class='wpt-checkbox-input' id='{$checkbox_id}' name='{$name}[]' value='{$term_id}' data-term-name='" . esc_attr( $category->name ) . "' data-term-id='{$term_id}' />";
+        $output .= "<span class='wpt-checkbox-label'>{$term_name}</span>";
+        if ( $count ) {
+            $output .= "<span class='wpt-checkbox-count'>({$count})</span>";
+        }
+        $output .= "</label>";
+    }
+
+    $output .= "</div>"; // .wpt-checkbox-list
+    $output .= "</div>"; // .wpt-checkbox-filter-wrapper
+
+    return $output;
+}
+
+/**
+ * Generate checkbox-based taxonomy search filter for frontend.
+ *
+ * Creates a complete checkbox filter section with selected items display area.
+ *
+ * @since 8.2.0
+ * @author Saiful Islam <codersaiful@gmail.com>
+ *
+ * @param string $taxonomy_keyword Taxonomy slug.
+ * @param int|string $temp_number Table ID.
+ * @param array|bool $search_n_filter Search and filter settings.
+ * @return string|bool HTML output or false on failure.
+ */
+function wpt_checkbox_taxonomy_search_generator( $taxonomy_keyword, $temp_number, $search_n_filter = false ) {
+    $selected_taxs = isset( $search_n_filter[$taxonomy_keyword] ) ? $search_n_filter[$taxonomy_keyword] : false;
+    $config_value = wpt_get_config_value( $temp_number );
+    
+    if ( ! $taxonomy_keyword || is_array( $taxonomy_keyword ) ) {
+        return false;
+    }
+
+    $taxonomy_details = get_taxonomy( $taxonomy_keyword );
+
+    if ( ! $taxonomy_details ) {
+        return false;
+    }
+
+    $label = apply_filters( 'wpto_searchbox_taxonomy_name', $taxonomy_details->labels->menu_name, $taxonomy_details, $temp_number );
+    $tx_order = $config_value['sort_searchbox_filter'] ?? 'ASC';
+
+    $args = array(
+        'orderby'      => 'name',
+        'order'        => $tx_order,
+        'hide_empty'   => 1,
+        'hierarchical' => 1,
+        'name'         => $taxonomy_keyword,
+        'id'           => $taxonomy_keyword . '_' . $temp_number,
+        'class'        => "wpt-checkbox-filter wpt-checkbox-filter-{$taxonomy_keyword}",
+        'taxonomy'     => $taxonomy_keyword,
+        'data-key'     => $taxonomy_keyword,
+        'table_id'     => $temp_number,
+    );
+
+    // Get custom term selection if available
+    $customized_taxonomy_obj = false;
+    if ( $selected_taxs && is_array( $selected_taxs ) && count( $selected_taxs ) > 0 ) {
+        $customized_taxonomy_obj = array();
+        foreach ( $selected_taxs as $termID ) {
+            $singleTerm = get_term( $termID );
+            if ( $singleTerm && ! is_wp_error( $singleTerm ) ) {
+                $customized_taxonomy_obj[] = $singleTerm;
+            }
+        }
+
+        // Sort terms if order is specified
+        if ( ! empty( $tx_order ) && $tx_order !== '0' ) {
+            usort( $customized_taxonomy_obj, function( $prev, $next ) use ( $tx_order ) {
+                if ( $tx_order === 'ASC' ) return $prev->name > $next->name ? 1 : -1;
+                if ( $tx_order === 'DESC' ) return $prev->name > $next->name ? -1 : 1;
+                return 0;
+            });
+        }
+    }
+
+    $taxonomy_keyword_escaped = esc_attr( $taxonomy_keyword );
+    $label_escaped = esc_html( $label );
+
+    $html = "<div class='search_single search_single_checkbox search_single_{$taxonomy_keyword_escaped}'>";
+    $html .= "<label class='search_keyword_label {$taxonomy_keyword_escaped}' for='{$taxonomy_keyword_escaped}_{$temp_number}'>{$label_escaped}</label>";
+    
+    // Selected items display area
+    $html .= "<div class='wpt-selected-items wpt-selected-items-{$taxonomy_keyword_escaped}' data-taxonomy='{$taxonomy_keyword_escaped}'></div>";
+    
+    // Checkbox filter
+    $html .= wpt_checkbox_taxonomy_filter( $args, $customized_taxonomy_obj );
+    
+    $html .= "</div>"; // .search_single
+
+    return $html;
 }
 
 if( ! function_exists( 'wpt_paginate_links' ) ){
@@ -1282,7 +1489,7 @@ if( ! function_exists( 'wpt_args_manage_by_get_args' ) ){
      * using Supper Global $_GET
      * 
      * @since 2.8.9
-     * @param type $args
+     * @param array $args
      * @return Array
      */
     function wpt_args_manage_by_get_args( $args, $table_ID ){
@@ -1660,29 +1867,3 @@ if( defined('B2BKING_DIR') && ! function_exists( 'wpt_b2bking_plugin_integration
     add_filter( 'wpto_table_query_args', 'wpt_b2bking_plugin_integration' );
 }
 
-
-/**
- * Pro version CSS template hanndle
- * we have a folder inside css folder
- * and template will load based on choosen template.
- *
- * @param [type] $tbl_id
- * @return void
- */
-function wpt_default_css_template( $tbl_id ){
-    
-    $meta = get_post_meta( $tbl_id, 'table_style', true );
-    $template = $meta['template'] ?? false;
-    $template = apply_filters( 'wpto_table_template', $template, $tbl_id );
-    if( $template == 'none' || $template == 'custom' ) return;
-    if( ! $template ) return;
-    
-    $template_dir = WPT_BASE_DIR . 'assets/css/templates/'. $template . '.css';
-
-    if( ! is_file( $template_dir ) ) return;
-
-    $template_file = WPT_Product_Table::getPath('BASE_URL') . 'assets/css/templates/' . $template . '.css';
-    wp_enqueue_style( 'wpt-template-' . $template , $template_file, array(), WPT_DEV_VERSION, 'all' );
-}
-// add_action( 'wpt_after_table','wpt_default_css_template', 999 );
-// add_action( 'wpto_action_start_table','wpt_default_css_template', 999 );

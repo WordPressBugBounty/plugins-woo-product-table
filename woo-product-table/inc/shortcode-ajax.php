@@ -254,7 +254,7 @@ class Shortcode_Ajax extends Shortcode{
         //Whole Table Body part here
         ob_start();
         $this->argsOrganize()->table_body();
-        $output['table.wpt-tbl>tbody'] = ob_get_clean();
+        $output['.wpt-table-tag.wpt-tbl>.wpt-tbody-tag'] = ob_get_clean();
 
         //Table stats mean: Showing 0 - 0 out of 0 Page 0 out of 0
         ob_start();

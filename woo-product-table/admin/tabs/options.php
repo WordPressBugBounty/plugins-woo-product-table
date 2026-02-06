@@ -13,6 +13,93 @@ $data = isset( $meta_basics['data'] ) ? $meta_basics['data'] : false;
 ?>
 <div class="section ultraaddons-panel">
 
+    <!-- Export Feature Settings - Start -->
+    <div class="wpt_column wpt-export-settings-wrapper">
+        <table class="ultraaddons-table">
+            <tr>
+                <th colspan="2">
+                    <h3 style="margin: 0; padding: 10px 0; border-bottom: 2px solid #667eea; color: #667eea;">
+                        <span class="dashicons dashicons-download" style="margin-right: 5px;"></span>
+                        <?php esc_html_e( 'Export Settings', 'woo-product-table' ); ?>
+                    </h3>
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    <label class="wpt_label" for="wpt_export_enable"><?php esc_html_e( 'Enable Export', 'woo-product-table' ); ?></label>
+                </th>
+                <td>
+                    <div class="custom-select-box-wrapper sfl-auto-gen-box">
+                        <?php
+                        // Default to 'off' for new tables (when meta doesn't exist)
+                        $export_enable = isset( $meta_basics['export_enable'] ) ? $meta_basics['export_enable'] : 'off';
+                        ?>
+                        <input type="hidden" name="basics[export_enable]"
+                            value="<?php echo esc_attr( $export_enable ); ?>"
+                            class="custom-select-box-input" id="wpt_export_enable">
+                        <div class="wpt-custom-select-boxes">
+                            <div class="wpt-custom-select-box <?php echo esc_attr( $export_enable === 'on' ? 'active' : '' ); ?>" data-value="on">
+                                <?php esc_html_e( 'Enable', 'woo-product-table' ); ?>
+                            </div>
+                            <div class="wpt-custom-select-box <?php echo esc_attr( $export_enable === 'off' ? 'active' : '' ); ?>" data-value="off">
+                                <?php esc_html_e( 'Disable', 'woo-product-table' ); ?>
+                            </div>
+                        </div>
+                        <p class="description"><?php esc_html_e( 'Enable or disable the export button on the frontend table.', 'woo-product-table' ); ?></p>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label class="wpt_label"><?php esc_html_e( 'Export Formats', 'woo-product-table' ); ?></label>
+                </th>
+                <td>
+                    <div class="wpt-export-formats-checkboxes">
+                        <p class="description" style="margin-bottom: 10px;"><?php esc_html_e( 'Select which export formats to show on the frontend:', 'woo-product-table' ); ?></p>
+                        <?php
+                        // Export formats with default enabled state
+                        $export_formats = array(
+                            'html'  => array( 'label' => 'HTML', 'icon' => '📄', 'color' => '#3498db' ),
+                            'csv'   => array( 'label' => 'CSV', 'icon' => '📊', 'color' => '#27ae60' ),
+                            'pdf'   => array( 'label' => 'PDF', 'icon' => '📕', 'color' => '#e74c3c' ),
+                            'excel' => array( 'label' => 'Excel (.xlsx)', 'icon' => '📗', 'color' => '#1d8348' ),
+                            'xml'   => array( 'label' => 'XML', 'icon' => '📋', 'color' => '#8e44ad' ),
+                            'json'  => array( 'label' => 'JSON', 'icon' => '📦', 'color' => '#e67e22' ),
+                            'ods'   => array( 'label' => 'ODS', 'icon' => '📑', 'color' => '#16a085' ),
+                        );
+                        
+                        if( ! wpt_is_premium() ){
+                            $export_formats['csv'] = array( 'label' => 'CSV(Premium)', 'icon' => '📊', 'color' => '#afb8beff' );
+                            $export_formats['excel'] = array( 'label' => 'Excel (.xlsx)(Premium)', 'icon' => '📗', 'color' => '#afb8beff' );
+                            $export_formats['xml'] = array( 'label' => 'XML(Premium)', 'icon' => '📋', 'color' => '#afb8beff' );
+                            $export_formats['ods'] = array( 'label' => 'ODS(Premium)', 'icon' => '📑', 'color' => '#afb8beff' );
+                        }
+
+                        foreach ( $export_formats as $format_key => $format_info ) :
+                            // Default to 'on' for all formats if not set (for new tables)
+                            $format_enabled = isset( $meta_basics['export_format_' . $format_key] ) ? $meta_basics['export_format_' . $format_key] : 'on';
+                        ?>
+                        <div class="wpt-export-format-checkbox" style="display: flex; align-items: center; margin-bottom: 8px; padding: 10px 12px; background: #f8f9fa; border-radius: 5px; border-left: 4px solid <?php echo esc_attr( $format_info['color'] ); ?>;">
+                            <label style="display: flex; align-items: center; cursor: pointer; width: 100%;">
+                                <!-- Hidden field to send 'off' value when checkbox is unchecked -->
+                                <input type="hidden" name="basics[export_format_<?php echo esc_attr( $format_key ); ?>]" value="off">
+                                <input type="checkbox" 
+                                    name="basics[export_format_<?php echo esc_attr( $format_key ); ?>]" 
+                                    value="on"
+                                    <?php checked( $format_enabled, 'on' ); ?>
+                                    style="margin-right: 10px; width: 18px; height: 18px;">
+                                <span style="font-size: 18px; margin-right: 8px;"><?php echo esc_html( $format_info['icon'] ); ?></span>
+                                <strong style="color: <?php echo esc_attr( $format_info['color'] ); ?>;"><?php echo esc_html( $format_info['label'] ); ?></strong>
+                            </label>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- Export Feature Settings - End -->
+
     <div class="wpt_column">
         <table class="ultraaddons-table">
             <tr>

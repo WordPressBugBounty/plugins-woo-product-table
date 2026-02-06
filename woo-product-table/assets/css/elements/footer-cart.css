@@ -206,7 +206,7 @@ p.wpt-product-notfound-cart {
 body.wpt-footer-cart-expand .wpt-cart-contents span.count {
     background: #0000006b;
 }
-.default_wrapper table#wpt_table.wpt_product_table a.added_to_cart.wc-forward {
+.default_wrapper #wpt_table.wpt-table-tag.wpt_product_table a.added_to_cart.wc-forward {
     display: block;
     width: 100% !important;
     background: transparent;

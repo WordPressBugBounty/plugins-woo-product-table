@@ -221,7 +221,7 @@ class WPT_Elementor_Widget extends \Elementor\Widget_Base{
                             'global' => [
                                     'default' => Global_Typography::TYPOGRAPHY_PRIMARY,
                             ],
-                            'selector' => '{{WRAPPER}} table.wpt_product_table thead tr th',
+                            'selector' => '{{WRAPPER}} .wpt-table-tag.wpt_product_table thead tr th',
                     ]
             );
 
@@ -231,7 +231,7 @@ class WPT_Elementor_Widget extends \Elementor\Widget_Base{
                     'label'     => __( 'Color', 'woo-product-table' ),
                     'type'      => Controls_Manager::COLOR,
                     'selectors' => [
-                        '{{WRAPPER}} table.wpt_product_table thead tr th' => 'color: {{VALUE}}',
+                        '{{WRAPPER}} .wpt-table-tag.wpt_product_table thead tr th' => 'color: {{VALUE}}',
                     ],
                     'default'   => '#ffffff',
                 ]
@@ -243,7 +243,7 @@ class WPT_Elementor_Widget extends \Elementor\Widget_Base{
                     'label'     => __( 'Background Color', 'woo-product-table' ),
                     'type'      => Controls_Manager::COLOR,
                     'selectors' => [
-                        '{{WRAPPER}} table.wpt_product_table thead tr th' => 'background-color: {{VALUE}}',
+                        '{{WRAPPER}} .wpt-table-tag.wpt_product_table thead tr th' => 'background-color: {{VALUE}}',
                     ],
                     'default'   => '#0a7f9c',
                 ]
@@ -280,10 +280,10 @@ class WPT_Elementor_Widget extends \Elementor\Widget_Base{
                                     'default' => Global_Typography::TYPOGRAPHY_PRIMARY,
                             ],
                             'selectors' => [
-                                '{{WRAPPER}} table.wpt_product_table tbody tr td',
-                                '{{WRAPPER}} table.wpt_product_table tbody tr td a',
-                                '{{WRAPPER}} table.wpt_product_table tbody tr td p',
-                                '{{WRAPPER}} table.wpt_product_table tbody tr td div',
+                                '{{WRAPPER}} .wpt-table-tag.wpt_product_table .wpt-tbody-tag .wpt-td-tag',
+                                '{{WRAPPER}} .wpt-table-tag.wpt_product_table .wpt-tbody-tag .wpt-td-tag a',
+                                '{{WRAPPER}} .wpt-table-tag.wpt_product_table .wpt-tbody-tag .wpt-td-tag p',
+                                '{{WRAPPER}} .wpt-table-tag.wpt_product_table .wpt-tbody-tag .wpt-td-tag div',
                             ],
                     ]
             );
@@ -294,9 +294,9 @@ class WPT_Elementor_Widget extends \Elementor\Widget_Base{
                     'label'     => __( 'Text Color', 'woo-product-table' ),
                     'type'      => Controls_Manager::COLOR,
                     'selectors' => [
-                        '{{WRAPPER}} table.wpt_product_table tbody tr td' => 'color: {{VALUE}}',
-                        '{{WRAPPER}} table.wpt_product_table tbody tr td p' => 'color: {{VALUE}}',
-                        '{{WRAPPER}} table.wpt_product_table tbody tr td div' => 'color: {{VALUE}}',
+                        '{{WRAPPER}} .wpt-table-tag.wpt_product_table .wpt-tbody-tag .wpt-td-tag' => 'color: {{VALUE}}',
+                        '{{WRAPPER}} .wpt-table-tag.wpt_product_table .wpt-tbody-tag .wpt-td-tag p' => 'color: {{VALUE}}',
+                        '{{WRAPPER}} .wpt-table-tag.wpt_product_table .wpt-tbody-tag .wpt-td-tag div' => 'color: {{VALUE}}',
                     ],
                     'default'   => '#535353',
                 ]
@@ -308,7 +308,7 @@ class WPT_Elementor_Widget extends \Elementor\Widget_Base{
                     'label'     => __( 'Product Title Color', 'woo-product-table' ),
                     'type'      => Controls_Manager::COLOR,
                     'selectors' => [
-                        '{{WRAPPER}} table.wpt_product_table tbody tr td .product_title a' => 'color: {{VALUE}}',
+                        '{{WRAPPER}} .wpt-table-tag.wpt_product_table .wpt-tbody-tag .wpt-td-tag .product_title a' => 'color: {{VALUE}}',
                     ],
                     'default'   => '#000',
                 ]
@@ -321,7 +321,7 @@ class WPT_Elementor_Widget extends \Elementor\Widget_Base{
                     'label'     => __( 'Background Color', 'woo-product-table' ),
                     'type'      => Controls_Manager::COLOR,
                     'selectors' => [
-                        '{{WRAPPER}} table.wpt_product_table tbody tr td' => 'background-color: {{VALUE}}',
+                        '{{WRAPPER}} .wpt-table-tag.wpt_product_table .wpt-tbody-tag .wpt-td-tag' => 'background-color: {{VALUE}}',
                     ],
                     //'default'   => '#fff',
                 ]

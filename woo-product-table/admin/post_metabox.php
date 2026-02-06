@@ -290,28 +290,34 @@ if( ! function_exists( 'wpt_shortcode_configuration_metabox_save_meta' ) ){
          */
         $filtar_args = array(
             'column_array' => array(
-                'filter' => FILTER_SANITIZE_STRING,
+                'filter' => FILTER_CALLBACK,
                 'flags' => FILTER_REQUIRE_ARRAY,
+                'options' => 'sanitize_text_field'
             ),
             'column_array_tablet' => array(
-                'filter' => FILTER_SANITIZE_STRING,
+                'filter' => FILTER_CALLBACK,
                 'flags' => FILTER_REQUIRE_ARRAY,
+                'options' => 'sanitize_text_field'
             ),
             'column_array_mobile' => array(
-                'filter' => FILTER_SANITIZE_STRING,
+                'filter' => FILTER_CALLBACK,
                 'flags' => FILTER_REQUIRE_ARRAY,
+                'options' => 'sanitize_text_field'
             ),
             'enabled_column_array' => array(
-                'filter' => FILTER_SANITIZE_STRING,
+                'filter' => FILTER_CALLBACK,
                 'flags' => FILTER_REQUIRE_ARRAY,
+                'options' => 'sanitize_text_field'
             ),
             'enabled_column_array_tablet' => array(
-                'filter' => FILTER_SANITIZE_STRING,
+                'filter' => FILTER_CALLBACK,
                 'flags' => FILTER_REQUIRE_ARRAY,
+                'options' => 'sanitize_text_field'
             ),
             'enabled_column_array_mobile' => array(
-                'filter' => FILTER_SANITIZE_STRING,
+                'filter' => FILTER_CALLBACK,
                 'flags' => FILTER_REQUIRE_ARRAY,
+                'options' => 'sanitize_text_field'
             ),
             'column_settings' => array(
                 'filter' => FILTER_CALLBACK,
@@ -329,32 +335,39 @@ if( ! function_exists( 'wpt_shortcode_configuration_metabox_save_meta' ) ){
                 'options' => 'wp_kses_post'
             ),
             'basics' => array(
-                'filter' => FILTER_SANITIZE_STRING,
+                'filter' => FILTER_CALLBACK,
                 'flags' => FILTER_REQUIRE_ARRAY,
+                'options' => 'wp_kses_post'
             ),
             'table_style' => array(
-                'filter' => FILTER_SANITIZE_STRING,
+                'filter' => FILTER_CALLBACK,
                 'flags' => FILTER_REQUIRE_ARRAY,
+                'options' => 'wp_kses_post'
             ),
             'conditions' => array(
-                'filter' => FILTER_SANITIZE_STRING,
+                'filter' => FILTER_CALLBACK,
                 'flags' => FILTER_REQUIRE_ARRAY,
+                'options' => 'sanitize_text_field'
             ),
             'mobile' => array(
-                'filter' => FILTER_SANITIZE_STRING,
+                'filter' => FILTER_CALLBACK,
                 'flags' => FILTER_REQUIRE_ARRAY,
+                'options' => 'sanitize_text_field'
             ),
             'search_n_filter' => array(
-                'filter' => FILTER_SANITIZE_STRING,
+                'filter' => FILTER_CALLBACK,
                 'flags' => FILTER_REQUIRE_ARRAY,
+                'options' => 'wp_kses_post'
             ),
             'pagination' => array(
-                'filter' => FILTER_SANITIZE_STRING,
+                'filter' => FILTER_CALLBACK,
                 'flags' => FILTER_REQUIRE_ARRAY,
+                'options' => 'wp_kses_post'
             ),
             'config' => array(
-                'filter' => FILTER_SANITIZE_STRING,
+                'filter' => FILTER_CALLBACK,
                 'flags' => FILTER_REQUIRE_ARRAY,
+                'options' => 'wp_kses_post'
             ),
         );
         $filtar_args = apply_filters('wpt_data_save_filter_arr', $filtar_args);
@@ -492,7 +505,8 @@ if( ! function_exists( 'wpt_shortcode_configuration_metabox_save_meta' ) ){
          * @Hook_Version: 6.1.0.5
          */
         do_action( 'wpto_on_save_post', $post_id );
-
+        //flash rewrite rules
+        flush_rewrite_rules();
     }
 }
 add_action( 'save_post', 'wpt_shortcode_configuration_metabox_save_meta', 10, 2 ); // 

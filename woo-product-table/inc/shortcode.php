@@ -124,6 +124,33 @@ class Shortcode extends Shortcode_Base{
      */
     public $_device; 
 
+/**
+    public $table_tag = 'div';
+    public $thead_tag = 'section';
+    public $tbody_tag = 'div';
+    public $tr_tag = 'section';
+    public $th_tag = 'span';
+    public $td_tag = 'div';
+
+    public $table_tag = 'table';
+    public $thead_tag = 'thead';
+    public $tbody_tag = 'tbody';
+    public $tr_tag = 'tr';
+    public $th_tag = 'th';
+    public $td_tag = 'td';
+
+
+
+ */
+
+    //table tags replace/change
+    public $table_tag = 'table';
+    public $thead_tag = 'thead';
+    public $tbody_tag = 'tbody';
+    public $tr_tag = 'tr';
+    public $th_tag = 'th';
+    public $td_tag = 'td';
+
     /**
      * It will return current device name.
     * such: mobile,tablet,desktop.
@@ -293,6 +320,7 @@ class Shortcode extends Shortcode_Base{
         
         ?>
         <div id="table_id_<?php echo esc_attr( $this->table_id ); ?>" 
+        data-page_number="<?php echo esc_attr( $this->page_number ); ?>"
         class="<?php echo esc_attr( Table_Attr::wrapper_class( $this ) ); ?>"
         data-unique_id="<?php echo esc_attr( $this->unique_id ); ?>"
         data-temp_number="<?php echo esc_attr( $this->table_id ); ?>" 
@@ -304,6 +332,10 @@ class Shortcode extends Shortcode_Base{
             $this->minicart_render( 'top' );
 
             $this->search_box_render();
+            
+            // Render export button after search box
+            $this->export_button_render();
+            
             //Actually this action hook is no need here, because it should called $this->search_box_render() but still we didnt' call over there.
             //we made new for our new table
             //do_action( 'wpto_after_advance_search_box', $this->table_id, $this->args, $this->column_settings, $this->_enable_cols, $this->_config, $this->atts );
@@ -323,18 +355,33 @@ class Shortcode extends Shortcode_Base{
             <div class="wpt_table_tag_wrapper">
                 <div class="wpt-ob_get_clean"></div>
                 <!-- data-config_json attr is important for custom.js-->
-                <table 
-                data-page_number="<?php echo esc_attr( $this->page_number + 1 ); ?>"
+                <?php 
+                /**
+                 * new hook for before table body tag
+                 * @version 6.0.0.0
+                 */
+                do_action('wpto_before_table_body', $this->table_id, $this); ?>
+                <<?php echo esc_html( $this->table_tag ); ?> 
                 data-temp_number="<?php echo esc_attr( $this->table_id ); ?>"
                 data-config_json="<?php echo esc_attr( wp_json_encode( $this->_config ) ); ?>"
                 data-data_json=""
                 data-data_json_backup=""
                 id="wpt_table"
-                class="<?php echo esc_attr( Table_Attr::table_class( $this ) ); ?>">
+                class="wpt-table-tag <?php echo esc_attr( Table_Attr::table_class( $this ) ); ?>">
 
                 <?php $this->table_head(); ?>
-                <?php $this->table_body(); ?>
-                </table>
+                <?php 
+                echo '<'. esc_html( $this->tbody_tag ) .' class="wpt-tbody-tag">';
+                $this->table_body();
+                echo '</'. esc_html( $this->tbody_tag ) .'>';
+                ?>
+                </<?php echo esc_html( $this->table_tag ); ?>>
+                <?php 
+                /**
+                 * New hook added just after Table body tag
+                 * @version 6.0.0.0
+                 */
+                do_action('wpto_after_table_body', $this->table_id, $this); ?>
 
 
 
@@ -771,6 +818,12 @@ class Shortcode extends Shortcode_Base{
             $this->load_css_element( 'checkbox-box' );
         }
         
+        // Load export button CSS if export is enabled
+        $export_enabled = isset( $this->basics['export_enable'] ) && $this->basics['export_enable'] === 'on';
+        if( $export_enabled ){
+            $this->load_css_element( 'export-button' );
+        }
+        
         /**
          * Template Control is here.
          */
@@ -967,7 +1020,7 @@ class Shortcode extends Shortcode_Base{
             <?php
             return;
         }
-
+        
         $product_loop = $this->get_product_loop();
         if ($this->orderby == 'random') {
             shuffle( $product_loop->posts );
@@ -991,17 +1044,18 @@ class Shortcode extends Shortcode_Base{
         endif;
 
         wp_reset_postdata();
+        
     }
     protected function table_head(){
         if( ! $this->table_head ) return;
         if( ! $this->is_table_head ) return; //Check column available or not, if empty array of _enable_cols, it will return false.
         $show_stats = $this->generated_row ? 'display: none;' : '';
         ?>
-        <thead style="<?php echo esc_attr( $show_stats ); ?>">
-            <tr data-temp_number="<?php echo esc_attr( $this->table_id ); ?>" class="wpt_table_header_row wpt_table_head">
+        <<?php echo esc_html( $this->thead_tag ); ?> style="<?php echo esc_attr( $show_stats ); ?>" class="wpt-thead-tag">
+            <<?php echo esc_html( $this->tr_tag ); ?> data-temp_number="<?php echo esc_attr( $this->table_id ); ?>" class="wpt-tr-tag wpt_table_header_row wpt_table_head">
             <?php 
             foreach( $this->_enable_cols as $key => $col ){ ?>
-            <th class="wpt_<?php echo esc_attr( $key ); ?>">
+            <<?php echo esc_html( $this->th_tag ); ?> class="wpt-th-tag wpt_<?php echo esc_attr( $key ); ?>" data-target_class="wpt_<?php echo esc_attr( $key ); ?>">
                 <?php 
                 $col_content = $this->column_array[$key] ?? $col;
                 if( $key == 'check' ){
@@ -1034,12 +1088,12 @@ class Shortcode extends Shortcode_Base{
                     echo wp_kses_data( __( $col_content, 'woo-product-table' ) );
                 }
                 ?>
-            </th>
+            </<?php echo esc_html( $this->th_tag ); ?>>
             <?php
             }
             ?>
-            </tr>
-        </thead>
+            </<?php echo esc_html( $this->tr_tag ); ?>>
+        </<?php echo esc_html( $this->thead_tag ); ?>>
         <?php
         
     }
@@ -1122,6 +1176,69 @@ class Shortcode extends Shortcode_Base{
             <?php  
         }
          
+    }
+
+    /**
+     * RENDER EXPORT BUTTON:
+     * Renders the export buttons above the product table
+     * All formats are available in free version
+     * Shows separate buttons for each export format based on admin settings
+     *
+     * @return void
+     * @since 5.0.7
+     * @author Woo Product Table
+     */
+    public function export_button_render(){
+        // Check if export is enabled (default to 'on' for new tables)
+        $export_enabled = isset( $this->basics['export_enable'] ) && $this->basics['export_enable'] === 'on' ? true : false;
+        if( ! $export_enabled ) return;
+
+        // Export format configurations - label is just format name, title has full description
+        $export_formats = array(
+            'html'  => array( 'icon' => '📄', 'label' => 'HTML', 'title' => __( 'Download table as HTML', 'woo-product-table' ), 'class' => 'wpt-export-btn-html' ),
+            // 'csv'   => array( 'icon' => '📊', 'label' => 'CSV', 'title' => __( 'Download table as CSV', 'woo-product-table' ), 'class' => 'wpt-export-btn-csv' ),
+            'pdf'   => array( 'icon' => '📕', 'label' => 'PDF', 'title' => __( 'Download table as PDF', 'woo-product-table' ), 'class' => 'wpt-export-btn-pdf' ),
+            // 'excel' => array( 'icon' => '📗', 'label' => 'Excel', 'title' => __( 'Download table as Excel', 'woo-product-table' ), 'class' => 'wpt-export-btn-excel' ),
+            // 'xml'   => array( 'icon' => '📋', 'label' => 'XML', 'title' => __( 'Download table as XML', 'woo-product-table' ), 'class' => 'wpt-export-btn-xml' ),
+            'json'  => array( 'icon' => '📦', 'label' => 'JSON', 'title' => __( 'Download table as JSON', 'woo-product-table' ), 'class' => 'wpt-export-btn-json' ),
+            // 'ods'   => array( 'icon' => '📑', 'label' => 'ODS', 'title' => __( 'Download table as ODS', 'woo-product-table' ), 'class' => 'wpt-export-btn-ods' ),
+        );
+
+        if( wpt_is_premium() ){
+            $export_formats['csv'] = array( 'icon' => '📊', 'label' => 'CSV', 'title' => __( 'Download table as CSV', 'woo-product-table' ), 'class' => 'wpt-export-btn-csv' );
+            $export_formats['excel'] = array( 'icon' => '📗', 'label' => 'Excel', 'title' => __( 'Download table as Excel', 'woo-product-table' ), 'class' => 'wpt-export-btn-excel' );
+            $export_formats['xml'] = array( 'icon' => '📋', 'label' => 'XML', 'title' => __( 'Download table as XML', 'woo-product-table' ), 'class' => 'wpt-export-btn-xml' );
+            $export_formats['ods'] = array( 'icon' => '📑', 'label' => 'ODS', 'title' => __( 'Download table as ODS', 'woo-product-table' ), 'class' => 'wpt-export-btn-ods' );
+        }
+
+        $export_formats = apply_filters( 'wpt_export_formats', $export_formats, $this->table_id );
+        // Check which formats are enabled
+        $enabled_formats = array();
+        foreach ( $export_formats as $format_key => $format_info ) {
+            // Check if format is explicitly set. If not set (new table), default to enabled.
+            // If set to 'off', skip. If set to 'on', include.
+            $format_setting = isset( $this->basics['export_format_' . $format_key] ) ? $this->basics['export_format_' . $format_key] : 'on';
+            if ( $format_setting === 'on' ) {
+                $enabled_formats[ $format_key ] = $format_info;
+            }
+        }
+
+        // Don't render if no formats are enabled
+        if ( empty( $enabled_formats ) ) return;
+
+        ?>
+        <div class="wpt-export-wrapper" data-table_id="<?php echo esc_attr( $this->table_id ); ?>">
+            <div class="wpt-export-buttons">
+                <?php foreach ( $enabled_formats as $format_key => $format_info ) : ?>
+                <button type="button" class="wpt-export-btn <?php echo esc_attr( $format_info['class'] ); ?>" data-format="<?php echo esc_attr( $format_key ); ?>" data-table_id="<?php echo esc_attr( $this->table_id ); ?>" title="<?php echo esc_attr( $format_info['title'] ); ?>">
+                    <span class="wpt-export-icon" aria-hidden="true"><?php echo esc_html( $format_info['icon'] ); ?></span>
+                    <span class="wpt-export-text"><?php echo esc_html( $format_info['label'] ); ?></span>
+                    <span class="wpt-export-btn-spinner" aria-hidden="true" style="display: none;"></span>
+                </button>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php
     }
 
     public function __destruct()

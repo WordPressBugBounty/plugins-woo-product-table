@@ -8,6 +8,14 @@ use WOO_PRODUCT_TABLE\Inc\Shortcode_Base;
  * Most of the basic option for Fronend actually
  * will call here. 
  * Specially for Frontend
+ * ************************************************
+ * IMPORTANT NOTE:
+ * This class will extend Shortcode_Base class $this->filter('body_class');
+ * Edit Button $this->action('wpt_bottom', 1, 10, 'edit_button');
+ * Add New Button $this->action('wpt_bottom', 1, 10, 'add_new_button');
+ * Empty Cart Button $this->action('woocommerce_widget_shopping_cart_buttons', 1, 10, 'empty_cart_button');
+ * [Disabled now] Translate Configuration Value by filter $this->filter('wpt_get_config_value', 2, 10 );
+ * ************************************************
  * 
  * @author Saiful Islam <codersaiful@gmail.com>
  * @package WooProductTable
@@ -23,6 +31,8 @@ class Basics extends Shortcode_Base{
         $this->action('wpt_bottom', 1, 10, 'edit_button');
         $this->action('wpt_bottom', 1, 10, 'add_new_button');
         $this->action('woocommerce_widget_shopping_cart_buttons', 1, 10, 'empty_cart_button');
+        
+        // $this->filter('wpt_get_config_value', 2, 10 );
     }
 
     
@@ -80,5 +90,26 @@ class Basics extends Shortcode_Base{
         ?>
         <a title="<?php echo esc_attr__( 'Empty Cart', 'woo-product-table' ); ?>" class="wpt_empty_cart_btn button"><i class="wpt-trash-empty"></i><?php echo esc_html( $this->empty_cart_text ); ?></a>
         <?php
+    }
+
+    /**
+     * Translate configuration value by filter
+     *
+     * @param array $config_value
+     * @param boolean|int $table_ID
+     * @return array
+     */
+    function wpt_get_config_value( $config_value, $table_ID = false ){
+
+        if( ! is_array( $config_value ) ) return [];
+
+        $config_value = array_map( function( $value ){
+            
+            if(is_string( $value )) return __( $value, 'woo-product-table' );
+            return $value;
+            
+        }, $config_value );
+
+        return $config_value;
     }
 }

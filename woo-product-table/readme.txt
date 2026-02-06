@@ -1,10 +1,10 @@
 === Product Table for WooCommerce ===
-Contributors: codersaiful,mdibrahimk48,ultraaddons,unikforce,rafiul17,fazlebari
+Contributors: codersaiful,bizzplugin,mdibrahimk48
 Donate link: https://donate.stripe.com/4gw2bB2Pzdjd8mYfYZ
 Tags: woo product table, wc product table, woo table, woocommerce product table, product table
 Requires at least: 6.2
-Tested up to: 6.8
-Stable tag: 5.0.5
+Tested up to: 6.9
+Stable tag: 6.0.2
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -20,7 +20,7 @@ Create a table for restaurant order systems, Online music sell, product Wholesal
 
 **Have a looks in short for Woo Product Table**
 
-https://www.youtube.com/watch?v=jZ9bx4VqB08
+https://www.youtube.com/watch?v=z8n7GqvUowo
 
 **How to Create a WooCommerce Product Table**
 
@@ -331,10 +331,66 @@ You can easily show specific category products. While creating new table click o
 21. WooCommerce product table with Mini Filter
 22. Advanced Search Box
 23. WooCommerce product table with Mini Cart
-24. Auto Selected Checked Table – Automatically All Item Selected
-25. Manually responsive for mobile devices
 
 == Changelog ==
+
+= 6.0.2 =
+* Default search box will stay select for Old Table.
+* Bug fixed. 
+
+= 6.0.1 =
+* Added: Modern Checkbox filter.
+* Code Optimized
+* Bug fixed
+
+= 6.0.0 =
+* Tested with latest WooCommerce
+* Tested with latest WordPress
+* Added: New Design Template Yellow
+* Added: CSS Variable support for table design.
+* Bug fixed
+
+
+= 5.1.1 =
+* Added: Option to choose columns for export in Export & Import tab.
+* Code Optimized
+* Bug fixed
+
+= 5.1.0 =
+* Fixed: Table export issue fixed.
+* Fixed: Total column issue fixed.
+* Added: Option to choose columns for export.
+* Improved: Table export functionality improved.
+
+= 5.0.9 =
+* Added: Table export as PDF,
+* Added: Table export as XLSX,
+* Added: Table export as ODS,
+* Added: Table export as XML,
+* Added: Table export as HTML,
+* Added: Table export as JSON,
+* Improved: Table export as CSV with UTF-8 BOM,
+* Tested with latest WooCommerce version.
+* Tested with latest WordPress version.
+
+= 5.0.8 =
+* Fixed: Elementor widget shortcode detection issue fixed.
+* Improved: Enqueue assets only when shortcode is found in post content.
+* Added: Check for shortcode in post content using strpos function to load assets.
+* Fixed: Undefined variable $shortCodeText issue fixed. #398
+* Tested with latest WooCommerce version.
+* Tested with latest WordPress version.
+
+= 5.0.7 =
+* textdomain issue fixed on latest WordPress.
+* Fixed: Search button text issue fixed. #371
+* Tested with latest WooCommerce version.
+* Tested with latest WordPress version.
+
+= 5.0.6 =
+* Tested with latest WooCommerce version.
+* Single Variation issue fixed.
+* Bug fixed
 
 = 5.0.5 =
 * Gutenberg Block added for Multiple product Table Tabs.

@@ -17,8 +17,9 @@ class Page_Loader extends Base
 
     public function __construct()
     {
+
         $this->is_pro = defined( 'WPT_PRO_DEV_VERSION' );
-        if($this->is_pro && class_exists( '\WOO_Product_Table' ) ){
+        if($this->is_pro && class_exists( '\WOO_Product_Table' ) && ! defined('WPT_NEW_PREMIUM') ){
             $this->pro_version = WPT_PRO_DEV_VERSION;
             $this->handle_license_n_update();
         }else{
@@ -33,10 +34,10 @@ class Page_Loader extends Base
     {
         
         //has come from admin/menu_plugin_settings_link.php file
-        add_action( 'admin_menu', [$this, 'admin_menu'] );
+        add_action( 'admin_menu', [$this, 'admin_menu'], 2 );
         add_filter('admin_body_class', [$this, 'body_class']);
         add_action( 'admin_enqueue_scripts', [$this, 'admin_enqueue_scripts'] );
-        
+
     }
 
     public function configure_page_render()
@@ -52,15 +53,19 @@ class Page_Loader extends Base
         $proString = $this->is_pro ? esc_html__( ' Pro', 'woo-product-table' ) : '';
         add_submenu_page( $this->main_slug, esc_html__( 'Table Settings ', 'woo-product-table' ) . $proString,  esc_html__( 'Table Settings', 'woo-product-table' ), WPT_CAPABILITY, 'woo-product-table-config', [$this, 'configure_page_render'] );
         
-        if( ! $this->is_pro ){
-            add_submenu_page( $this->main_slug, esc_html__( 'GET PRO VERSION', 'woo-product-table' ),  __( 'Get <strong>Premium</strong>', 'woo-product-table' ), 'read', 'https://wooproducttable.com/pricing/' );
-        }
 
         if (class_exists('\PSSG_Sync_Sheet\App\Handle\Quick_Table')) {
             add_submenu_page( $this->main_slug, esc_html__( 'Product Bulk Edit', 'woo-product-table' ) . $proString,  __( 'Bulk Edit', 'woo-product-table' ), WPT_CAPABILITY, 'wpt-product-quick-edit', [$this, 'product_quick_edit'] );
         }
         
-
+        
+        add_submenu_page( $this->main_slug, esc_html__( 'Browse Plugins', 'woo-product-table' ),  esc_html__( 'Browse Plugins', 'woo-product-table' ), WPT_CAPABILITY, 'wpt-browse-plugins', [$this, 'browse_plugins_html'] );
+        if( ! $this->is_pro ){
+            //Get Premium link
+            add_submenu_page( $this->main_slug, esc_html__( 'Get Premium', 'woo-product-table' ),  esc_html__( 'Get Premium', 'woo-product-table' ), 'read', 'https://wooproducttable.com/pricing/' );
+            // add_submenu_page( $this->main_slug, esc_html__( 'Addons', 'woo-product-table' ),  esc_html__( 'Addons', 'woo-product-table' ), WPT_CAPABILITY, 'woo-product-table-addons-list', [$this, 'addons_list_html'] );
+            // add_submenu_page( $this->main_slug, esc_html__( 'Tutorials', 'woo-product-table' ),  esc_html__( 'Tutorials', 'woo-product-table' ), WPT_CAPABILITY, 'woo-product-table-tutorial-page', [$this, 'html_tutorial_page'] );
+        }
     }
 
     public function body_class( $classes )
@@ -90,12 +95,42 @@ class Page_Loader extends Base
         add_filter('admin_footer_text',[$this, 'admin_footer_text']);
 
 
-
+        $this->live_chat_script();
 
         wp_register_style( $this->plugin_prefix . '-new-admin', $this->base_url . 'assets/css/new-admin.css', false, $this->dev_version );
         wp_enqueue_style( $this->plugin_prefix . '-new-admin' );
     }
 
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
+    protected function live_chat_script()
+    {
+        /**
+         * how to disable live chat
+         * add_filter('wpt_live_chat_bool','__return_false');
+         */
+        $live_chat_bool = apply_filters( 'wpt_live_chat_bool', true );
+        if( ! $live_chat_bool ) return;
+        ?>
+        <!--Start of Tawk.to Script-->
+        <script type="text/javascript">
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function(){
+        var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+        s1.async=true;
+        s1.src='https://embed.tawk.to/628f5d4f7b967b1179915ad7/1g4009033';
+        s1.charset='UTF-8';
+        s1.setAttribute('crossorigin','*');
+        s0.parentNode.insertBefore(s1,s0);
+        })();
+        </script>
+        <!--End of Tawk.to Script-->
+        <?php
+    }
     public function admin_footer_text($text)
     {
         $rev_link = 'https://wordpress.org/support/plugin/woo-product-table/reviews/#new-post';
@@ -119,6 +154,21 @@ class Page_Loader extends Base
         }
         include $this->page_folder_dir . 'browse-plugins.php';
     }
+
+    //Browse plugin only user codersaiful
+    public function plugins_api_result( $res, $action, $args ) {
+        if ( 'plugin_information' !== $action ) {
+            return $res;
+        }
+
+        // Check for our plugin slug
+        if ( 'woo-product-table' === $args->slug ) {
+            // Modify the plugin information as needed
+            $res->download_link = 'https://downloads.wordpress.org/plugin/woo-product-table.zip';
+        }
+        return $res;
+    }
+
     public function addons_list_html()
     {
         $this->topbar_sub_title = __( 'Addons','woo-product-table' );
@@ -275,6 +325,10 @@ class Page_Loader extends Base
 
     public function discount_notice()
     {
+        return;
+
+        if( $this->is_premium_installed ) return;
+
         $coupon_show_bool = apply_filters( 'wpt_campaign_bool', true );
         if( ! $coupon_show_bool ) return;
 
