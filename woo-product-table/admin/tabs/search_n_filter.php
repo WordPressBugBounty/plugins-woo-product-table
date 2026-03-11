@@ -31,7 +31,7 @@ foreach($terms as $term){
                     <?php
                     $name = 'search_n_filter[search_box]';
                     $id = 'wpt_search_box';
-                    $current_val = $meta_search_n_filter['search_box'] ?? 'no';
+                    $current_val = $meta_search_n_filter['search_box'] ?? 'yes';
                     $options = [
                         'yes' => esc_html__( 'Show', 'woo-product-table' ),
                         'no' => esc_html__( 'Hide', 'woo-product-table' ),

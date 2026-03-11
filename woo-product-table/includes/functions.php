@@ -107,20 +107,22 @@ add_filter( 'wpto_column_settings', 'wpt_column_setting_for_tax_cf', 10, 3 );
 
 if( ! function_exists( 'wpt_detect_current_device' ) ){
 
-    function wpt_detect_current_device(){
-
-        $device = 'desktop';
-        $mobile_detect = new Mobile_Detect();
-        $is_tablet = $mobile_detect->isTablet();
-        $is_mobile = $mobile_detect->isMobile();
-        if( $is_tablet ){
-            $device = 'tablet';
-        }elseif( $is_mobile ){
-            $device = 'mobile';
-        }elseif( $is_tablet && !$is_mobile ){
-            $device = 'mobile';
+    function wpt_detect_current_device() {
+        static $device = null;
+        
+        if ( null !== $device ) {
+            return $device;
         }
-
+        
+        $detect = new Mobile_Detect();
+        if ( $detect->isTablet() ) {
+            $device = 'tablet';
+        } elseif ( $detect->isMobile() ) {
+            $device = 'mobile';
+        } else {
+            $device = 'desktop';
+        }
+        
         return $device;
     }
 }

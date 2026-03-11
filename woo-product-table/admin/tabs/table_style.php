@@ -52,12 +52,25 @@ foreach ($pro_templates as $temp_key => $tempplate_name) {
 
 $meta_table_style_inPost = get_post_meta($post->ID, 'table_style', true);
 $current_template = $meta_table_style_inPost['template'] ?? '';
-
+$layout = $meta_table_style_inPost['layout'] ?? 'left-sidebar';
 ?>
 
 <div class="section ultraaddons-panel">
     <div class="wpt_column">
         <table class="ultraaddons-table">
+            <tr>
+                <th scope="row">
+                    <label>Select Layout</label>
+                </th>
+                <td>
+                    <select class="ua-select " name="table_style[layout]">
+                        <option value="left-sidebar" <?php selected( 'left-sidebar', $layout ); ?>>Left Sidebar</option>
+                        <option value="right-sidebar" <?php selected( 'right-sidebar', $layout ); ?>>Right Sidebar</option>
+                        <option value="no-sidebar" <?php selected( 'no-sidebar', $layout ); ?>>No Sidebar (Full Width)</option>
+                    </select>
+                </td>
+            </tr>
+
             <tr>
                 <td colspan="2" class="wpt_table_style">
                     <h1>Select Template</h1>
