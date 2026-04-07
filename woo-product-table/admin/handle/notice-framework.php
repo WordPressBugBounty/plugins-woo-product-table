@@ -1,18 +1,19 @@
 <?php
 namespace WOO_PRODUCT_TABLE\Admin\Handle;
 
+use WP;
+
 class Notice_Framework
 {
     public $framework;
+    private $offer_prefix = 'wpt-2offer-apr-26';
+    private $start_date = '2026-04-01';
+    private $end_date = '2026-04-30';
+    
     public function __construct()
     {
         require_once WPT_BASE_DIR . 'framework/framework.php';
         $this->framework = \CA_Framework::init( 'woo-product-table', WPT_PLUGIN_FILE_NAME );
-
-                
-
-
-        // $this->testNotice();
 
     }
 
@@ -21,29 +22,62 @@ class Notice_Framework
         
     }
 
-    public function offer_about_wpt_on_free_version(){
+    public function plugins_recommendation(){
 
         //get plugin data like following from get_recommended_plugins()
         $plugins = $this->framework->recommended_plugins($this->get_recommended_plugins(true), 'wpt-recommend-plugins');
         $plugins->show_on_hook('wpt_plugin_recommend_here');//->show();
     }
 
-    
-
-    public function offer_about_wpt_premium(){
+    public function offer_in_premium(){
         $this->framework->create_offer($this->get_offer_args(
             array(
-                'id' => 'wpt-discount-marce-2026',
+                'id'            => $this->offer_prefix . '-in_premium',
+                'pages'         => ['wpt', 'plugins', 'tools'],
+                'template'      => 'starter',
+                'title'         => 'CodeAstrology PLUGINS',
+                'description'   => 'Grab your exclusive discount for EXCLUSING WooCommerce products <b>Limited time offer</b> just for you.',
+                'reshow_after'  => 5,
+                'image_url'     => WPT_ASSETS_URL . 'images/offer.png',
+                'reshow_unit'   => 'hours',
+                'dismiss'       => false,
+                'randomize'     => 20,
+                'buttons'       => array(
+                    array(
+                        'text'  => 'Get 50% OFF',
+                        'url'   => 'https://codeastrology.com/products/',
+                        'class' => 'ca-fw-btn-primary',
+                        'icon'  => 'dashicons-cart',
+                    ),
+                    array(
+                        'text'  => 'Premium Demo',
+                        'url'   => 'https://wpprincipal.xyz/',
+                        'class' => 'ca-fw-btn-primary',
+                        'icon'  => 'dashicons-visibility',
+                    ),
+                ),
+            )
+        ))
+        ->show()
+        ->show_on_hook('wpt_plugin_recommend_here', 2);
+    }
+    
+
+    public function offer_4_premium_in_free(){
+        $this->framework->create_offer($this->get_offer_args(
+            array(
+                'id' => $this->offer_prefix . '-in_free-exclude',
                 // 'badge_text' => 'Limited Time Offer',
+                'pages' => array(),
                 'pages_exclude'          => array('wpt', 'plugins', 'tools'),
-                'randomize' => 25
+                'randomize' => 15
             )
         ))
         ->show();
 
         $this->framework->create_offer($this->get_offer_args(
             array(
-                'id' => 'wpt-2026-marce-inside',
+                'id' => $this->offer_prefix . '-in_free-include',
                 // 'badge_text' => 'Limited Time Offer',
                 'pages'          => array('wpt', 'plugins', 'tools'),
                 'template'      => 'flash',
@@ -51,40 +85,30 @@ class Notice_Framework
                 'reshow_unit'   => 'hours',
                 //disable dismiss
                 'dismiss' => false,
-                'randomize' => 80,
+                'randomize' => 20,
             )
         ))
         ->show()
         ->show_on_hook('wpt_plugin_recommend_here');
 
-        //offer eid for inside plugin
+        //normal popup inside plugin
         $this->framework->create_popup($this->get_popup_args(
             array(
-                'id' => 'wpt-2026-march-eid-offer',
+                'id' => $this->offer_prefix . '-popup-include',
                 'reshow_after'  => 5,
                 'reshow_unit'   => 'hours',
-                'start_date'    => '2026-03-01',
-                'image_url' => WPT_ASSETS_URL . 'images/wpt-eid-offer.png',
+                // 'start_date'    => '2026-04-01',
+                'image_url' => WPT_ASSETS_URL . 'images/logo.png',
                 
             )
         ))->show();
 
-        //normal for inside
-        $this->framework->create_popup($this->get_popup_args(
-            array(
-                'id' => 'wpt-2026-marce-inside',
-                'reshow_after'  => 5,
-                'reshow_unit'   => 'hours',
-                'start_date'    => '2026-03-31',
-                'image_url' => WPT_ASSETS_URL . 'images/logo.png',
 
-            )
-        ))->show();
 
         //normal for outside
         $this->framework->create_popup($this->get_popup_args(
             array(
-                'id' => 'wpt-2026-marce-outside',
+                'id' => $this->offer_prefix . '-popup-exclude',
                 'reshow_after'  => 5,
                 'reshow_unit'   => 'days',
                 'image_url' => WPT_ASSETS_URL . 'images/logo.png',
@@ -100,8 +124,8 @@ class Notice_Framework
     {
         $default_args = $this->get_offer_args(
             array(
-                'id' => 'wpt-popup-march-2026',
-                'badge_text' => 'UP TO 50% OFF',
+                'id' => $this->offer_prefix,
+                'badge_text' => 'FLAT 50% OFF',
                 'description'  => '<p>Upgrade to the Pro version and get:</p>
                         <ul>
                             <li>✅ Access to all premium features</li>
@@ -115,7 +139,7 @@ class Notice_Framework
                 'template'      => 'flash',
                 'reshow_after'  => 5,
                 'reshow_unit'   => 'hours',
-                'randomize' => 20,
+                'randomize' => 15,
                 'image_url' => WPT_ASSETS_URL . 'images/logo.png',
                 'buttons' => array(
                     array(
@@ -126,7 +150,7 @@ class Notice_Framework
                     ),
                     array(
                         'text'  => 'Premium Demo',
-                        'url'   => 'https://wpprincipal.xyz/',
+                        'url'   => 'https://wpprincipal.xyz/?demo=wpt',
                         'class' => 'ca-fw-btn-outline',
                         'icon'  => 'dashicons-visibility',
                     ),
@@ -142,15 +166,15 @@ class Notice_Framework
     private function get_offer_args($new_args = array())
     {
         $default_args = array(
-            // 'id'             => 'wpt-discount-marce-2026',
+            'id' => $this->offer_prefix,
             'title'          => '🎉 Special discount for <strong>Woo Product Table</strong>',
             'description'    => 'Get your special discount now! <b>Limited time offer</b> just for you. Maximize your savings with this exclusive deal. Claim your discount!',
-            'highlight_text' => 'UP TO 50% OFF',
+            'highlight_text' => 'FLAT 50% OFF',
             'badge_text'     => 'FLASH SALE',
             'template'       => 'developer', //flash, starter, simple
-            'start_date'     => '2026-03-01',
+            'start_date'     => $this->start_date,
             'dismiss_type'   => 'temporary',
-            'end_date'       => '2026-04-30',
+            'end_date'       => $this->end_date,
             // 'pages_exclude'          => array('wpt', 'plugins', 'tools'),
             // 'pages_exclude'  => array('wpt-settings'),
             // 'show_countdown' => true,
@@ -282,184 +306,4 @@ class Notice_Framework
 		return $plugins;
 	}
 
-    /**
-     * Only for test purposes
-     * not for production use
-     *
-     * @return void
-     */
-    public function testNotice()
-    {
-        $this->framework->create_offer(array(
-            'id'          => 'special-offer-123',
-            'title'       => 'Special - Offers!',
-            'description' => '40% Off <strong>Woo Product Table</strong>',
-            'template'    => 'flash',
-            'buttons'     => array(
-                array(
-                    'text' => 'Get It Now',
-                    'url'  => 'https://example.com/pricing/',
-                ),
-                array(
-                    'text' => 'No, Thanks',
-                    'url'  => '#',
-                ),
-                array(
-                    'text' => 'Maybe Later',
-                    'url'  => '#',
-                ),
-            ),
-        ))->show();
-
-        $this->framework->create_offer(array(
-            'id'             => 'flash-sale-2026',
-            'title'          => '⚡ Flash Sale!',
-            'description'    => 'Only 24 hours left! Grab the deal now.',
-            'highlight_text' => 'UP TO 80% OFF',
-            'badge_text'     => 'FLASH SALE',
-            'template'       => 'flash',
-            'start_date'     => '2026-03-01',
-            'end_date'       => '2026-03-23',
-            'pages'          => array('wpt', 'plugins', 'tools'),
-            'show_countdown' => true,
-            'reshow_unit'    => 'hours',
-            'reshow_after'   => 2,
-            // 'randomize'     => 10,
-            'buttons' => array(
-                array(
-                    'text'  => 'Upgrade to Pro',
-                    'url'   => 'https://example.com/pro/',
-                    'class' => 'ca-fw-btn-primary',
-                    'icon'  => 'dashicons-star-filled',
-                ),
-                array(
-                    'text'   => 'View Features',
-                    'url'    => 'https://example.com/features/',
-                    'class'  => 'ca-fw-btn-secondary',
-                    'target' => '_blank',
-                ),
-                array(
-                    'text'  => 'Documentation',
-                    'url'   => 'https://example.com/docs/',
-                    'class' => 'ca-fw-btn-outline',
-                ),
-            ),
-        ))->show_on_hook('wpt_plugin_recommend_here')->show();
-
-        $this->framework->create_popup(array(
-            'id'           => 'upgradse-popup-22322euu',
-            'title'        => '🚀 Unlock Premium Inside',
-            'description'  => '<p>Upgrade to the Pro version and get:</p>
-                        <ul>
-                            <li>✅ Unlimited templates</li>
-                            <li>✅ Priority support</li>
-                            <li>✅ Advanced customization</li>
-                            <li>✅ Regular updates</li>
-                        </ul>
-                        <p>30-day money-back guarantee!</p>',
-            'badge_text'   => 'FLASH SALE',
-            'image_url'    => WPT_ASSETS_URL . 'images/logo.png',
-            'dismiss_type' => 'temporary', //permanent
-            'reshow_after' => 8,
-            'reshow_unit'  => 'seconds',
-            // 'randomize'    => 100,
-            'pages'        => array(),
-            'width'        => '550px',
-            'buttons'      => array(
-                array(
-                    'text'  => 'Upgrade Now - 50% OFF',
-                    'url'   => 'https://example.com/pricing/',
-                    'class' => 'ca-fw-btn-primary',
-                    'icon'  => 'dashicons-star-filled',
-                ),
-                array(
-                    'text'  => 'Maybe Later',
-                    'url'   => '#',
-                    'class' => 'ca-fw-btn-secondary',
-                ),
-                array(
-                    'text'  => 'No, Thanks',
-                    'url'   => '#',
-                    'class' => 'ca-fw-btn-outline',
-                    'icon'  => 'dashicons-no-alt',
-                ),
-            ),
-        ))->show();
-
-        $this->framework->create_popup(array(
-            'id'           => 'adse-popup-22322euu',
-            'title'        => '🚀 Unlock Saiful Islam',
-            'description'  => '<p>Upgrade to the Pro version and get:</p>
-                        <ul>
-                            <li>✅ Unlimited templates</li>
-                            <li>✅ Priority support</li>
-                            <li>✅ Advanced customization</li>
-                            <li>✅ Regular updates</li>
-                            <li>✅ Unlimited templates</li>
-                            <li>✅ Priority support</li>
-                            <li>✅ Advanced customization</li>
-                            <li>✅ Regular updates</li>
-                        </ul>
-                        <p>30-day money-back guarantee!</p>',
-            'badge_text'   => 'PRO VERSION',
-            // 'image_url'    => WPT_ASSETS_URL . 'images/logo.png',
-            'dismiss_type' => 'temporary', //permanent
-            'reshow_after' => 6,
-            'reshow_unit'  => 'seconds',
-            // 'randomize'    => 100,
-            'pages'        => array(),
-            'width'        => '550px',
-            'buttons'      => array(
-                array(
-                    'text'  => 'Upgrade Now - 50% OFF',
-                    'url'   => 'https://example.com/pricing/',
-                    'class' => 'ca-fw-btn-primary',
-                    'icon'  => 'dashicons-star-filled',
-                ),
-                array(
-                    'text'  => 'Maybe Later',
-                    'url'   => '#',
-                    'class' => 'ca-fw-btn-secondary',
-                ),
-                array(
-                    'text'  => 'No, Thanks',
-                    'url'   => '#',
-                    'class' => 'ca-fw-btn-outline',
-                    'icon'  => 'dashicons-no-alt',
-                ),
-            ),
-        ))->show();
-
-        $plugins = $this->framework->recommended_plugins(array(
-            //contact form 7
-            array(
-                'name'        => 'Contact Form 7',
-                'slug'        => 'contact-form-7',
-                'path'        => 'contact-form-7/wp-contact-form-7.php',
-                'description' => 'Just another contact form plugin. Simple but flexible.',
-                'icon'        => 'https://ps.w.org/contact-form-7/assets/icon-256x256.png',
-            ),
-            array(
-                'name'        => 'developer developer developrff',
-                'slug'        => 'developer-developer-developer',
-                'path'        => 'developer-developer-developer/developer-developer-developer.php',
-                'description' => 'Starter addons for Elementor page builder.',
-                'icon'        => 'https://ps.w.org/developer-developer-developer/assets/icon-256x256.png',
-            ),
-            array(
-                'name'        => 'Developer Plugin 2',
-                'slug'        => 'developer-plugin-2',
-                'path'        => 'developer-plugin-2/developer-plugin-2.php',
-                'description' => 'Another great plugin by the same team.',
-                'icon'        => 'https://ps.w.org/developer-plugin-2/assets/icon-256x256.png',
-            ),
-            array(
-                'name'        => 'Developer Plugin 3',
-                'slug'        => 'woo-product-table',
-                'path'        => 'woo-product-table/woo-product-table.php',
-                'description' => 'Extend your workflow with this tool.',
-            ),
-        ), 'wpt-test');
-        $plugins->show_on_hook('wpt_plugin_recommend_here')->show();
-    }
 }

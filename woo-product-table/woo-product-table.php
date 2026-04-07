@@ -8,7 +8,7 @@
  * Author URI: https://wooproducttable.com/?utm_source=WPT+Plugin+Dashboard&utm_medium=Free+Version
  * Tags: wooproducttable, woocommerce product list,woocommerce product table, wc product table, product grid view, inventory, shop product table
  * 
- * Version: 6.0.3
+ * Version: 6.0.4
  * Requires at least:    6.2
  * Tested up to:         6.9
  * WC requires at least: 6.2.2
@@ -44,7 +44,7 @@ if( ! defined( 'WPT_PLUGIN_BASE_FOLDER' ) ){
 }
 
 if( ! defined( 'WPT_DEV_VERSION' ) ){
-    define( 'WPT_DEV_VERSION', '6.0.3.3' );
+    define( 'WPT_DEV_VERSION', '6.0.4.0' );
 }
 
 if( ! defined( 'WPT_CAPABILITY' ) ){
@@ -430,7 +430,7 @@ if( ! class_exists('WPT_Product_Table') ){
              * @author Saiful <codersaiful@gmail.com>
              */
             require_once WPT_DIR_BASE . '/framework/handle.php';
-
+            // dd(WPT_Required::fail());
             if( WPT_Required::fail() ){
                 return;
             } 

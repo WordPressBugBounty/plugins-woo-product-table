@@ -23,13 +23,14 @@ class Page_Loader extends Base
         $this->is_pro = defined( 'WPT_PRO_DEV_VERSION' );
         
         $this->notice_framework = new Notice_Framework();
-        $this->notice_framework->offer_about_wpt_on_free_version();
+        $this->notice_framework->plugins_recommendation();
 
         if($this->is_pro && class_exists( '\WOO_Product_Table' ) && ! defined('WPT_NEW_PREMIUM') ){
             $this->pro_version = WPT_PRO_DEV_VERSION;
             $this->handle_license_n_update();
+            $this->notice_framework->offer_in_premium();
         }else{
-            $this->notice_framework->offer_about_wpt_premium();
+            $this->notice_framework->offer_4_premium_in_free();
         }
         $this->page_folder_dir = $this->base_dir . 'admin/page/';
         $this->topbar_file = $this->page_folder_dir . 'topbar.php';

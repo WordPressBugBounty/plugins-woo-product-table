@@ -41,7 +41,7 @@ if ( ! class_exists( 'CA_Framework_Required_Plugin' ) ) {
          * @param string $plugin_slug Parent plugin identifier.
          * @param array  $plugins     List of required plugin configurations.
          */
-        public function __construct( $plugin_slug, $plugins = array(), $plugin_basename ) {
+        public function __construct( $plugin_slug, $plugins = array(), $plugin_basename = null ) {
             $this->plugin_slug   = $plugin_slug;
             $this->plugins       = $plugins;
             $this->plugin_basename = $plugin_basename;

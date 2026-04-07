@@ -28,16 +28,16 @@ if ( ! class_exists( 'WPT_Required' ) ) {
          * @return bool True if requirements are NOT met (fail).
          */
         public static function fail() {
+            // dd(! class_exists( 'WooCommerce' ),self::class . '::' . __FUNCTION__ . ' called');
             // WooCommerce is required
             if ( ! class_exists( 'WooCommerce' ) ) {
                 $framework = CA_Framework::init( 'woo-product-table', WPT_PLUGIN_FILE_NAME );
-
                 $framework->required_plugins( array(
                     array(
                         'name'        => 'WooCommerce',
                         'slug'        => 'woocommerce',
                         'path'        => 'woocommerce/woocommerce.php',
-                        'description' => __( 'WooCommerce is required for Product Table to work.', 'woo-product-table' ),
+                        'description' => 'WooCommerce is required for Product Table to work. Please install and activate WooCommerce.',
                         'icon'        => 'https://ps.w.org/woocommerce/assets/icon.svg?rev=3234504',
                     ),
                 ) )->show();
