@@ -4,7 +4,7 @@ Donate link: https://donate.stripe.com/4gw2bB2Pzdjd8mYfYZ
 Tags: woo product table, wc product table, woo table, woocommerce product table, product table
 Requires at least: 6.2
 Tested up to: 6.9
-Stable tag: 6.0.4
+Stable tag: 6.0.5
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -300,7 +300,7 @@ You can easily show specific category products. While creating new table click o
 
 == Changelog ==
 
-= 6.0.4 =
+= 6.0.4 & 6.0.5 =
 * Optimized: Code optimized for better performance and security.
 * Tested with latest WooCommerce version.
 * Tested with latest WordPress version.

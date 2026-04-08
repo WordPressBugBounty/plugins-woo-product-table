@@ -33,15 +33,15 @@ class Notice_Framework
         $this->framework->create_offer($this->get_offer_args(
             array(
                 'id'            => $this->offer_prefix . '-in_premium',
-                'pages'         => ['wpt', 'plugins', 'tools'],
+                // 'pages'         => [], //automatically on our selected pages
                 'template'      => 'starter',
                 'title'         => 'CodeAstrology PLUGINS',
                 'description'   => 'Grab your exclusive discount for EXCLUSING WooCommerce products <b>Limited time offer</b> just for you.',
-                'reshow_after'  => 5,
+                'reshow_after'  => 25,
                 'image_url'     => WPT_ASSETS_URL . 'images/offer.png',
                 'reshow_unit'   => 'hours',
                 'dismiss'       => false,
-                'randomize'     => 20,
+                'randomize'     => 15,
                 'buttons'       => array(
                     array(
                         'text'  => 'Get 50% OFF',
@@ -79,9 +79,9 @@ class Notice_Framework
             array(
                 'id' => $this->offer_prefix . '-in_free-include',
                 // 'badge_text' => 'Limited Time Offer',
-                'pages'          => array('wpt', 'plugins', 'tools'),
+                // 'pages'          => array('wpt', 'plugins', 'tools', 'dashboard'),
                 'template'      => 'flash',
-                'reshow_after'  => 5,
+                'reshow_after'  => 25,
                 'reshow_unit'   => 'hours',
                 //disable dismiss
                 'dismiss' => false,
@@ -95,7 +95,7 @@ class Notice_Framework
         $this->framework->create_popup($this->get_popup_args(
             array(
                 'id' => $this->offer_prefix . '-popup-include',
-                'reshow_after'  => 5,
+                'reshow_after'  => 25,
                 'reshow_unit'   => 'hours',
                 // 'start_date'    => '2026-04-01',
                 'image_url' => WPT_ASSETS_URL . 'images/logo.png',
@@ -135,10 +135,10 @@ class Notice_Framework
                             <li>✅ Regular updates</li>
                         </ul>
                         <p>30-day money-back guarantee!</p>',
-                'pages'          => array('wpt', 'plugins', 'tools'),
+                // 'pages'          => array('wpt', 'plugins', 'tools', 'dashboard'),
                 'template'      => 'flash',
                 'reshow_after'  => 5,
-                'reshow_unit'   => 'hours',
+                'reshow_unit'   => 'days',
                 'randomize' => 15,
                 'image_url' => WPT_ASSETS_URL . 'images/logo.png',
                 'buttons' => array(
@@ -175,13 +175,13 @@ class Notice_Framework
             'start_date'     => $this->start_date,
             'dismiss_type'   => 'temporary',
             'end_date'       => $this->end_date,
-            // 'pages_exclude'          => array('wpt', 'plugins', 'tools'),
+            'pages'          => array('wpt', 'plugins', 'tools', 'dashboard'),
             // 'pages_exclude'  => array('wpt-settings'),
             // 'show_countdown' => true,
             'reshow_unit'    => 'days',
             'reshow_after'   => 5,
             'image_url'    => WPT_ASSETS_URL . 'images/logo.gif',
-            // 'randomize'     => 50,
+            'randomize'     => 15,
             'buttons' => $this->get_wpt_purchase_buttons(),
         );
         //use wp parse args function
