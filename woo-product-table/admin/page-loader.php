@@ -28,9 +28,9 @@ class Page_Loader extends Base
         if($this->is_pro && class_exists( '\WOO_Product_Table' ) && ! defined('WPT_NEW_PREMIUM') ){
             $this->pro_version = WPT_PRO_DEV_VERSION;
             $this->handle_license_n_update();
-            $this->notice_framework->offer_in_premium();
+            // $this->notice_framework->offer_in_premium();
         }else{
-            $this->notice_framework->offer_4_premium_in_free();
+            // $this->notice_framework->offer_4_premium_in_free();
         }
         $this->page_folder_dir = $this->base_dir . 'admin/page/';
         $this->topbar_file = $this->page_folder_dir . 'topbar.php';
