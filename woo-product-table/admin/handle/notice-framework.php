@@ -27,6 +27,18 @@ class Notice_Framework
         //get plugin data like following from get_recommended_plugins()
         $plugins = $this->framework->recommended_plugins($this->get_recommended_plugins(true), 'wpt-recommend-plugins');
         $plugins->show_on_hook('wpt_plugin_recommend_here');//->show();
+        
+        $bizzview_plugin = $this->framework->recommended_plugins($this->get_recommended_bizzview(), 'wpt-recommend-plugins');
+        $bizzview_plugin->show_on_hook('wpto_column_setting_form_quick');
+        $bizzview_plugin->show_on_hook('wpto_column_setting_form_inside_thumbnails');//->show();
+        $bizzview_plugin->show_on_hook('wpto_column_setting_form_inside_product_title');//->show();
+
+        $bizzmudra_plugin = $this->framework->recommended_plugins($this->get_recommended_bizzmudra(), 'wpt-recommend-plugins');
+        $bizzmudra_plugin->show_on_hook('wpto_column_setting_form_inside_price');//->show();
+
+        $actions_col_plugin = $this->framework->recommended_plugins($this->get_recommended_actions_col(), 'wpt-recommend-plugins');
+        $actions_col_plugin->show_on_hook('wpto_column_setting_form_inside_action');//
+        
     }
 
     public function offer_in_premium(){
@@ -305,5 +317,71 @@ class Notice_Framework
 
 		return $plugins;
 	}
+	private function get_recommended_bizzview() {
+		$plugins = array(
+			
+			array(
+				'slug'        => 'ca-quick-view',
+				'name'        => 'Bizzview - Quick View for WooCommerce',
+				'description' => __( 'Add quick view functionality to your WooCommerce products.', 'bizzswatches' ),
+				'icon'   => 'https://ps.w.org/ca-quick-view/assets/icon-256x256.png?changed',
+				'author'      => 'Bizzplugin',
+				'path'        => 'ca-quick-view/ca-quick-view.php',
+				'url'         => 'https://wordpress.org/plugins/ca-quick-view/',
+			),
+		);
 
+		return $plugins;
+	}
+
+    private function get_recommended_bizzmudra() {
+        $plugins = array(
+            
+            array(
+                'slug'        => 'bizzmudra',
+                'name'        => 'Bizzmudra - Multi Currency Switcher',
+                'description' => __( 'A multi currency switcher for WooCommerce.', 'bizzswatches' ),
+                'icon'   => 'https://ps.w.org/bizzmudra/assets/icon-256x256.png',
+                'author'      => 'Bizzplugin',
+                'path'        => 'bizzmudra/bizzmudra.php',
+                'url'         => 'https://wordpress.org/plugins/bizzmudra/',
+            ),
+        );  
+        return $plugins;
+    }
+
+    //bizzswatches recommend only for product title column setting page
+    private function get_recommended_actions_col() {
+        $plugins = array(
+            
+            array(
+                'slug'        => 'bizzswatches',
+                'name'        => 'Bizzswatches - Color and Image Swatches',
+                'description' => __( 'Add color and image swatches to your WooCommerce products.', 'bizzswatches' ),
+                'icon'   => 'https://ps.w.org/bizzswatches/assets/icon-256x256.png',
+                'author'      => 'Bizzplugin',
+                'path'        => 'bizzswatches/bizzswatches.php',
+                'url'         => 'https://wordpress.org/plugins/bizzswatches/',
+            ),
+            array(
+				'slug'        => 'woo-min-max-quantity-step-control-single',
+				'name'        => 'Min Max Control - Control Quantity for WooCommerce',
+				'description' => __( 'Control minimum and maximum quantities and step values for WooCommerce products.', 'bizzswatches' ),
+				'icon'   => 'https://ps.w.org/woo-min-max-quantity-step-control-single/assets/icon-256x256.png',
+				'author'      => 'Bizzplugin',
+				'path'        => 'woo-min-max-quantity-step-control-single/wcmmq.php',
+				'url'         => 'https://wordpress.org/plugins/woo-min-max-quantity-step-control-single/',
+			),
+            array(
+				'slug'        => 'wc-quantity-plus-minus-button',
+				'name'        => 'Quantity Plus Minus Button for WooCommerce',
+				'description' => __( 'Add plus and minus buttons to WooCommerce quantity fields.', 'bizzswatches' ),
+				'icon'   => 'https://ps.w.org/wc-quantity-plus-minus-button/assets/icon-256x256.png',
+				'author'      => 'Bizzplugin',
+				'path'        => 'wc-quantity-plus-minus-button/init.php',
+				'url'         => 'https://wordpress.org/plugins/wc-quantity-plus-minus-button/',
+			),
+        );  
+        return $plugins;
+    }
 }

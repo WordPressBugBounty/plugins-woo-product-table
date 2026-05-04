@@ -23,7 +23,7 @@ a.wpt_empty_cart_btn.button{
 }
 /*******For All Table*********/
 
-.wpt-tr-tag.wpt-row.wpt-added-to-cart{
+.wpt-table-tag .wpt-tr-tag.wpt-row{
  position: relative;
 }
 
@@ -1697,10 +1697,15 @@ flex-grow: 1;
  flex: 1 100%;
 }
 
-.wpt_product_title .item_inside_cell{
- display: flex;
- flex-direction: column;
- gap: 10px;
+.inner-available .item_inside_cell,
+.wpt_product_title .item_inside_cell {
+    display: block;
+    /* flex-direction: row; */
+    /* gap: 10px; */
+    width: 100%;
+    /* flex-wrap: nowrap; */
+    white-space: nowrap;
+    margin-bottom: 8px;
 }
 .wpt-td-tag.wpt-replace-td-in-.wpt-tr-tag div.td_or_cell.wpt_check{
  position: absolute !important;

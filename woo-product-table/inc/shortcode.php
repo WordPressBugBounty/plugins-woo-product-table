@@ -139,6 +139,12 @@ class Shortcode extends Shortcode_Base{
     public $th_tag = 'th';
     public $td_tag = 'td';
 
+    public $table_tag = 'div';
+    public $thead_tag = 'header';
+    public $tbody_tag = 'main';
+    public $tr_tag = 'section';
+    public $th_tag = 'span';
+    public $td_tag = 'div';
 
 
  */
@@ -306,6 +312,7 @@ class Shortcode extends Shortcode_Base{
 
         $this->atts = $atts;
 
+
         $pairs = array( 'exclude' => false );
         extract( shortcode_atts( $pairs, $atts ) );
         
@@ -323,7 +330,10 @@ class Shortcode extends Shortcode_Base{
         if( ! $this->table_display ) return;
 
         ob_start();
-        $latout = $this->table_style['layout'] ?? 'no-sidebar';
+        $latout = 'no-sidebar';
+        if( isset($this->search_n_filter['search_box']) && $this->search_n_filter['search_box'] !== 'no' ){
+            $latout = $this->table_style['layout'] ?? 'no-sidebar';
+        }
         ?>
 
         <div id="table_id_<?php echo esc_attr( $this->table_id ); ?>" 
@@ -1074,9 +1084,9 @@ class Shortcode extends Shortcode_Base{
     protected function table_head(){
         if( ! $this->table_head ) return;
         if( ! $this->is_table_head ) return; //Check column available or not, if empty array of _enable_cols, it will return false.
-        $show_stats = $this->generated_row ? 'display: none;' : '';
+
         ?>
-        <<?php echo esc_html( $this->thead_tag ); ?> style="<?php echo esc_attr( $show_stats ); ?>" class="wpt-thead-tag">
+        <<?php echo esc_html( $this->thead_tag ); ?> class="wpt-thead-tag">
             <<?php echo esc_html( $this->tr_tag ); ?> data-temp_number="<?php echo esc_attr( $this->table_id ); ?>" class="wpt-tr-tag wpt_table_header_row wpt_table_head">
             <?php 
             foreach( $this->_enable_cols as $key => $col ){ ?>
