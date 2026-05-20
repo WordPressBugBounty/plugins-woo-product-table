@@ -45,6 +45,11 @@ class Page_Loader extends Base
         add_filter('admin_body_class', [$this, 'body_class']);
         add_action( 'admin_enqueue_scripts', [$this, 'admin_enqueue_scripts'] );
 
+        if ( class_exists( '\WOO_PRODUCT_TABLE\Admin\Appseros\Src\Client' ) ) {
+            $client = new \WOO_PRODUCT_TABLE\Admin\Appseros\Src\Client( 'e8d12f8a-54f6-488e-9437-480fe6b3bc27', 'Woo Product Table', WPT_FILE );
+            $client->insights()->init();
+        }
+
     }
 
     public function configure_page_render()

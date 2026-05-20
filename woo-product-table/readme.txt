@@ -4,7 +4,7 @@ Donate link: https://donate.stripe.com/4gw2bB2Pzdjd8mYfYZ
 Tags: woo product table, wc product table, woo table, woocommerce product table, product table
 Requires at least: 6.2
 Tested up to: 7.0
-Stable tag: 6.0.8
+Stable tag: 6.0.9
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -245,6 +245,14 @@ With a Product Table Plugin, you can feel confident that your business processes
 * Ukrainian(Українська) - uk
 * Spanish(Español) - es_ES
 
+## Privacy Policy 
+Woo Product Table for WooCommerce by CodeAstrology uses [Appsero](https://appsero.com) SDK to collect some telemetry data upon user's confirmation. This helps us to troubleshoot problems faster & make product improvements.
+
+Appsero SDK **does not gather any data by default.** The SDK only starts gathering basic telemetry data **when a user allows it via the admin notice**. We collect the data to ensure a great user experience for all our users. 
+
+Integrating Appsero SDK **DOES NOT IMMEDIATELY** start gathering data, **without confirmation from users in any case.**
+
+Learn more about how [Appsero collects and uses this data](https://appsero.com/privacy-policy/).
 
 == Installation ==
 
@@ -300,7 +308,7 @@ You can easily show specific category products. While creating new table click o
 
 == Changelog ==
 
-= 6.0.8 =
+= 6.0.8 & 6.0.9 =
 * Added: New filter hook added for table row. Hook name: `wpt_tr_content`.
 * Tested with latest WooCommerce version.
 * Tested with latest WordPress version.

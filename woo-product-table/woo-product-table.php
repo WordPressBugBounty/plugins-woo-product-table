@@ -8,7 +8,7 @@
  * Author URI: https://wooproducttable.com/?utm_source=WPT+Plugin+Dashboard&utm_medium=Free+Version
  * Tags: wooproducttable, woocommerce product list,woocommerce product table, wc product table, product grid view, inventory, shop product table
  * 
- * Version: 6.0.8
+ * Version: 6.0.9
  * Requires at least:    6.2
  * Tested up to:         7.0
  * WC requires at least: 6.2.2
@@ -44,7 +44,7 @@ if( ! defined( 'WPT_PLUGIN_BASE_FOLDER' ) ){
 }
 
 if( ! defined( 'WPT_DEV_VERSION' ) ){
-    define( 'WPT_DEV_VERSION', '6.0.8.0' );
+    define( 'WPT_DEV_VERSION', '6.0.9.0' );
 }
 
 if( ! defined( 'WPT_CAPABILITY' ) ){
@@ -52,8 +52,8 @@ if( ! defined( 'WPT_CAPABILITY' ) ){
     define( 'WPT_CAPABILITY', $wpt_capability );
 }
 
-if( ! defined( 'WPT_PLUGIN' ) ){
-    define( 'WPT_PLUGIN', plugin_basename( __FILE__ ) ); 
+if( ! defined( 'WPT_FILE' ) ){
+    define( 'WPT_FILE', __FILE__ ); 
 }
 
 
@@ -703,7 +703,7 @@ if( ! class_exists('WPT_Product_Table') ){
         /**
          * Getting Version by this Function/Method
          * 
-         * @return type static String
+         * @return string static String
          */
         public static function getName() {
             $data = self::getPluginData();
@@ -713,8 +713,8 @@ if( ! class_exists('WPT_Product_Table') ){
         /**
          * Getting Plugin Default Data
          * 
-         * @param type $indexKey
-         * @return variable
+         * @param string $indexKey
+         * @return mixed
          */
         public static function getDefault( $indexKey = false ){
             $default = self::$default;
