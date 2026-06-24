@@ -1707,6 +1707,9 @@ flex-grow: 1;
     white-space: nowrap;
     margin-bottom: 8px;
 }
+.wpt_product_title .item_inside_cell {
+    white-space: normal;
+}
 .wpt-td-tag.wpt-replace-td-in-.wpt-tr-tag div.td_or_cell.wpt_check{
  position: absolute !important;
  top: 10px;
