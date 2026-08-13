@@ -3,6 +3,7 @@ namespace WOO_PRODUCT_TABLE\Admin;
 
 use WOO_PRODUCT_TABLE\Core\Base;
 use WOO_PRODUCT_TABLE\Admin\Handle\Notice_Framework;
+use CodeAstrology\Shared\Sale_Notice;
 
 class Page_Loader extends Base
 {
@@ -20,7 +21,24 @@ class Page_Loader extends Base
     public function __construct()
     {
 
+        require_once $this->base_dir . 'admin/class-codeastrology-expert-services.php';
+        require_once $this->base_dir . 'admin/handle/class-sale-notice.php';
+
         $this->is_pro = defined( 'WPT_PRO_DEV_VERSION' );
+
+        Sale_Notice::register( array(
+            'key'           => 'product-table-for-woocommerce',
+            'plugin_name'   => 'Product Table for WooCommerce',
+            'capability'    => WPT_CAPABILITY,
+            'screen_tokens' => array( 'wpt_product_table', 'woo-product-table', 'wpt-' ),
+            'purchase_url'  => 'https://wooproducttable.com/pricing/',
+            'has_premium'   => true,
+            'is_premium'    => function() {
+                return defined( 'WPT_PRO_DEV_VERSION' );
+            },
+            'headline'      => __( 'Super Sale on Woo Product Table Pro', 'woo-product-table' ),
+            'description'   => __( 'Unlock premium product-table features at a special limited-time price.', 'woo-product-table' ),
+        ) );
         
         $this->notice_framework = new Notice_Framework();
         $this->notice_framework->plugins_recommendation();
@@ -35,6 +53,31 @@ class Page_Loader extends Base
         $this->page_folder_dir = $this->base_dir . 'admin/page/';
         $this->topbar_file = $this->page_folder_dir . 'topbar.php';
         $this->topbar_sub_title = __("Manage and Settings", "woo-product-table");
+
+        \CodeAstrology\Shared\Expert_Services::register( array(
+            'key'            => 'product-table-for-woocommerce',
+            'plugin_name'    => __( 'Product Table for WooCommerce', 'woo-product-table' ),
+            'plugin_version' => WPT_DEV_VERSION,
+            'parent_slug'    => $this->main_slug,
+            'menu_slug'      => 'wpt-hire-expert',
+            'admin_page_path' => 'edit.php?post_type=wpt_product_table&page=wpt-hire-expert',
+            'capability'     => WPT_CAPABILITY,
+            'asset_url'      => $this->base_url . 'assets/css/expert-services.css',
+            'headline'       => __( 'Need a Custom Product Table or WooCommerce Ordering Experience?', 'woo-product-table' ),
+            'description'    => __( 'Our WordPress and WooCommerce experts can build custom product tables, catalogs, wholesale and B2B ordering workflows, filters, bulk-order interfaces, or any store customization you need. We deliver reliable, high-quality work at an affordable budget.', 'woo-product-table' ),
+            'settings_description' => __( 'Need a custom product table, wholesale catalog, advanced filter, bulk-order interface, or another WooCommerce workflow? Our experts can build it for you.', 'woo-product-table' ),
+            'services'       => array(
+                __( 'Custom WooCommerce product tables and catalogs', 'woo-product-table' ),
+                __( 'Wholesale, B2B, and bulk-ordering workflows', 'woo-product-table' ),
+                __( 'Advanced search, filters, columns, and table layouts', 'woo-product-table' ),
+                __( 'Cart, checkout, pricing, and ordering customization', 'woo-product-table' ),
+                __( 'Plugin integrations and custom WooCommerce features', 'woo-product-table' ),
+                __( 'Bug fixing, performance optimization, and maintenance', 'woo-product-table' ),
+            ),
+            'contact_email'  => 'contact@codeastrology.com',
+            'gmail_email'    => 'codersaiful@gmail.com',
+            'contact_url'    => 'https://codeastrology.com/contact-us/',
+        ) );
     }
 
     public function run()

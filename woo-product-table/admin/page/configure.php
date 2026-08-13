@@ -104,6 +104,8 @@ $wrapper_class = isset($settings['module']) ? $settings['module'] : '';
 
         </form>
 
+        <?php \CodeAstrology\Shared\Expert_Services::render_settings_card( 'product-table-for-woocommerce' ); ?>
+
         <div class="wpt-section-panel supported-terms wpt-recomendation-area" id="wpt-recomendation-area">
             <table class="wpt-my-table universal-setting">
                 <thead>
