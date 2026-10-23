@@ -20,7 +20,7 @@ Create a table for restaurant order systems, Online music sell, product Wholesal
 
 **Have a looks in short for Woo Product Table**
 
-https://www.youtube.com/watch?v=z8n7GqvUowo
+https://www.youtube.com/watch?v=MUYXSMqiEn8
 
 **How to Create a WooCommerce Product Table**
 
