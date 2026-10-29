@@ -556,10 +556,10 @@ class Shortcode extends Shortcode_Base{
         $stats_page_count = $this->basics['stats_page_count'] ?? '';//__( "Page %s out of %s", "woo-product-table" );
         
         ?>
-        <p class="wpt-stats-post-count">
+        <p class="wpt-stats-post-count" data-format="<?php echo esc_attr( $stats_post_count ); ?>">
             <?php printf( esc_html( $stats_post_count ), esc_html( $display_count ), esc_html( $this->found_posts )  ); ?>
         </p>
-        <p class="wpt-stats-page-count">
+        <p class="wpt-stats-page-count" data-format="<?php echo esc_attr( $stats_page_count ); ?>">
         <?php printf( esc_html( $stats_page_count ), esc_html( $display_pagN ), esc_html( $this->max_num_pages )  ); ?>
         </p>
         <?php 

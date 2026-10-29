@@ -40,6 +40,7 @@ if ( ! class_exists( __NAMESPACE__ . '\\Sale_Notice' ) ) {
 					'plugin_name'  => '',
 					'capability'   => 'manage_options',
 					'screen_tokens' => array(),
+					'exclude_pages' => array(),
 					'purchase_url'  => 'https://codeastrology.com/downloads/category/premium/',
 					'all_plugins_url' => 'https://codeastrology.com/downloads/category/premium/',
 					'has_premium'  => false,
@@ -57,6 +58,7 @@ if ( ! class_exists( __NAMESPACE__ . '\\Sale_Notice' ) ) {
 
 			$context['key'] = $key;
 			$context['screen_tokens'] = array_filter( array_map( 'sanitize_key', (array) $context['screen_tokens'] ) );
+			$context['exclude_pages'] = array_filter( array_map( 'sanitize_key', (array) $context['exclude_pages'] ) );
 			self::$contexts[ $key ] = $context;
 
 			if ( self::$booted ) {
@@ -238,6 +240,10 @@ if ( ! class_exists( __NAMESPACE__ . '\\Sale_Notice' ) ) {
 			$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
 			foreach ( self::$contexts as $context ) {
 				if ( ! self::is_context_available( $context ) ) {
+					continue;
+				}
+
+				if ( $page && in_array( $page, $context['exclude_pages'], true ) ) {
 					continue;
 				}
 

@@ -23,6 +23,9 @@ class Table_Attr{
         if($shortcode->auto_responsive){
             $shortcode->wrapper_class[] = 'wpt-auto-responsive';
         }
+        if( ! empty( $shortcode->args['wrapper_class'] ) ){
+            $shortcode->wrapper_class[] = $shortcode->args['wrapper_class'];
+        }
 
         //In Future Update version, this filter will removed
         $shortcode->wrapper_class = apply_filters( 'wpto_wrapper_tag_class_arr', $shortcode->wrapper_class, $shortcode->table_id, $shortcode->args, $shortcode->column_settings, $shortcode->_enable_cols, $shortcode->column_array );

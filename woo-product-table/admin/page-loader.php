@@ -33,6 +33,7 @@ class Page_Loader extends Base
             'screen_tokens' => array( 'wpt_product_table', 'woo-product-table', 'wpt-' ),
             'purchase_url'  => 'https://wooproducttable.com/pricing/',
             'has_premium'   => true,
+            'exclude_pages' => array( 'wpt-free-store-audit' ),
             'is_premium'    => function() {
                 return defined( 'WPT_PRO_DEV_VERSION' );
             },
@@ -59,13 +60,21 @@ class Page_Loader extends Base
             'plugin_name'    => __( 'Product Table for WooCommerce', 'woo-product-table' ),
             'plugin_version' => WPT_DEV_VERSION,
             'parent_slug'    => $this->main_slug,
-            'menu_slug'      => 'wpt-hire-expert',
-            'admin_page_path' => 'edit.php?post_type=wpt_product_table&page=wpt-hire-expert',
+            'menu_slug'      => 'wpt-free-store-audit',
+            'menu_title'     => __( 'Free Store Audit', 'woo-product-table' ),
+            'admin_page_path' => 'edit.php?post_type=wpt_product_table&page=wpt-free-store-audit',
             'capability'     => WPT_CAPABILITY,
             'asset_url'      => $this->base_url . 'assets/css/expert-services.css',
-            'headline'       => __( 'Need a Custom Product Table or WooCommerce Ordering Experience?', 'woo-product-table' ),
-            'description'    => __( 'Our WordPress and WooCommerce experts can build custom product tables, catalogs, wholesale and B2B ordering workflows, filters, bulk-order interfaces, or any store customization you need. We deliver reliable, high-quality work at an affordable budget.', 'woo-product-table' ),
-            'settings_description' => __( 'Need a custom product table, wholesale catalog, advanced filter, bulk-order interface, or another WooCommerce workflow? Our experts can build it for you.', 'woo-product-table' ),
+            'asset_pages'    => array( 'woo-product-table-config' ),
+            'page_mode'      => 'audit',
+            'headline'       => __( 'Get a Free Audit of Your WooCommerce Store', 'woo-product-table' ),
+            'description'    => __( 'Discover what may be slowing down, weakening, or costing sales on your WooCommerce store. We audit speed, plugins, SEO visibility, checkout experience, basic security signals, and your Product Table setup—then share clear, practical recommendations.', 'woo-product-table' ),
+            'settings_eyebrow' => __( 'FREE STORE AUDIT', 'woo-product-table' ),
+            'settings_description' => __( 'Let our team audit your Product Table experience and key WordPress, WooCommerce, speed, SEO, checkout, plugin, and security signals.', 'woo-product-table' ),
+            'settings_button_text' => __( 'Request Free Audit', 'woo-product-table' ),
+            'audit_focus_icon' => 'dashicons-screenoptions',
+            'audit_focus_title' => __( 'Product Table & Store UX', 'woo-product-table' ),
+            'audit_focus_description' => __( 'Table layout, mobile usability, filters, product selection, bulk ordering, and the path from browsing to cart.', 'woo-product-table' ),
             'services'       => array(
                 __( 'Custom WooCommerce product tables and catalogs', 'woo-product-table' ),
                 __( 'Wholesale, B2B, and bulk-ordering workflows', 'woo-product-table' ),
@@ -76,7 +85,7 @@ class Page_Loader extends Base
             ),
             'contact_email'  => 'contact@codeastrology.com',
             'gmail_email'    => 'codersaiful@gmail.com',
-            'contact_url'    => 'https://codeastrology.com/contact-us/',
+            'contact_url'    => 'https://forms.gle/EQXNvD6LBh8HqQjy9',
         ) );
     }
 

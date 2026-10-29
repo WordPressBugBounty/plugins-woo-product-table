@@ -155,7 +155,10 @@ if( ! function_exists( 'wpt_datatables_enqueue' ) ){
      * @return void
      */
    function wpt_datatables_enqueue( $table_ID ){ 
-    
+        if ( is_object( $table_ID ) && isset( $table_ID->table_id ) ) {
+            $table_ID = $table_ID->table_id;
+        }
+
         $condtion = get_post_meta( $table_ID, 'conditions', true );
         $datatable = $condtion['datatable'] ?? false;
         $datatable = apply_filters( 'wpto_datatable_load', $datatable, $table_ID );
@@ -176,7 +179,18 @@ if( ! function_exists( 'wpt_datatables_enqueue' ) ){
 
         $DATATABLE = array( 
             'table_id'        => $table_ID,
-            'nonce'          => wp_create_nonce( WPT_PLUGIN_FOLDER_NAME )
+            'nonce'           => wp_create_nonce( WPT_PLUGIN_FOLDER_NAME ),
+            'pageLength'      => 25,
+            'lengthMenu'      => array(
+                array( 10, 25, 50, 100, -1 ),
+                array( 10, 25, 50, 100, esc_html__( 'All', 'woo-product-table' ) )
+            ),
+            'order'           => array(),
+            'language'        => array(
+                'lengthMenu' => esc_html__( 'Show _MENU_ products', 'woo-product-table' ),
+                'info'       => esc_html__( 'Showing _START_ to _END_ of _TOTAL_ products', 'woo-product-table' ),
+                'search'     => esc_html__( 'Search:', 'woo-product-table' ),
+            ),
         );
 
         /**

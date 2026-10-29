@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! class_exists( __NAMESPACE__ . '\\Expert_Services' ) ) {
 	final class Expert_Services {
 
-		const VERSION = '1.0.2';
+		const VERSION = '1.1.1';
 
 		/** @var array<string,array<string,mixed>> */
 		private static $contexts = array();
@@ -39,20 +39,33 @@ if ( ! class_exists( __NAMESPACE__ . '\\Expert_Services' ) ) {
 				'plugin_version' => '',
 				'parent_slug'    => '',
 				'menu_slug'      => '',
+				'menu_title'     => __( 'Hire an Expert', 'woo-min-max-quantity-step-control-single' ),
 				'admin_page_path' => '',
 				'capability'     => 'manage_options',
 				'asset_url'      => '',
+				'asset_pages'    => array(),
 				'headline'       => '',
 				'description'    => '',
 				'settings_description' => __( 'Our experts build custom WordPress and WooCommerce solutions tailored to your business.', 'woo-min-max-quantity-step-control-single' ),
 				'services'       => array(),
+				'page_mode'      => 'hire',
+				'review_items'   => array(),
+				'audit_focus_icon' => 'dashicons-admin-generic',
+				'audit_focus_title' => '',
+				'audit_focus_description' => '',
+				'settings_eyebrow' => __( 'NEED SOMETHING MORE CUSTOM?', 'woo-min-max-quantity-step-control-single' ),
+				'settings_button_text' => __( 'Explore Expert Help', 'woo-min-max-quantity-step-control-single' ),
 				'contact_email'  => 'contact@codeastrology.com',
 				'gmail_email'    => 'codersaiful@gmail.com',
-				'contact_url'    => 'https://codeastrology.com/contact-us/',
+				'contact_url'    => 'https://forms.gle/EQXNvD6LBh8HqQjy9',
 				'company_url'    => 'https://codeastrology.com/',
 			);
 
 			$context = wp_parse_args( $context, $defaults );
+			$context['asset_pages'] = array_filter( array_map( 'sanitize_key', (array) $context['asset_pages'] ) );
+			if ( in_array( $context['page_mode'], array( 'audit', 'review' ), true ) && empty( $context['review_items'] ) ) {
+				$context['review_items'] = self::get_default_audit_items( $context );
+			}
 			$key     = sanitize_key( $context['key'] );
 
 			if ( ! $key || ! $context['parent_slug'] || ! $context['menu_slug'] ) {
@@ -81,8 +94,8 @@ if ( ! class_exists( __NAMESPACE__ . '\\Expert_Services' ) ) {
 			foreach ( self::$contexts as $context ) {
 				add_submenu_page(
 					$context['parent_slug'],
-					__( 'Hire an Expert', 'woo-min-max-quantity-step-control-single' ),
-					__( 'Hire an Expert', 'woo-min-max-quantity-step-control-single' ),
+					$context['menu_title'],
+					$context['menu_title'],
 					$context['capability'],
 					$context['menu_slug'],
 					array( __CLASS__, 'render_hire_page' )
@@ -104,7 +117,7 @@ if ( ! class_exists( __NAMESPACE__ . '\\Expert_Services' ) ) {
 
 			wp_add_dashboard_widget(
 				'codeastrology_expert_services_widget',
-				__( 'WordPress & WooCommerce Expert Help', 'woo-min-max-quantity-step-control-single' ),
+				__( 'Free WordPress & WooCommerce Store Audit', 'woo-min-max-quantity-step-control-single' ),
 				array( __CLASS__, 'render_dashboard_widget' )
 			);
 		}
@@ -116,21 +129,29 @@ if ( ! class_exists( __NAMESPACE__ . '\\Expert_Services' ) ) {
 		 * @return void
 		 */
 		public static function enqueue_assets( $hook_suffix ) {
-			$context = self::get_visible_context();
+			$context = null;
+			$page    = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
 
-			if ( ! $context || empty( $context['asset_url'] ) ) {
-				return;
-			}
+			if ( 'index.php' === $hook_suffix ) {
+				$context = self::get_visible_context();
+			} else {
+				foreach ( self::$contexts as $registered_context ) {
+					if ( ! current_user_can( $registered_context['capability'] ) || empty( $registered_context['asset_url'] ) ) {
+						continue;
+					}
 
-			$relevant = 'index.php' === $hook_suffix;
-			foreach ( self::$contexts as $registered_context ) {
-				if ( false !== strpos( $hook_suffix, $registered_context['parent_slug'] ) || false !== strpos( $hook_suffix, $registered_context['menu_slug'] ) ) {
-					$relevant = true;
-					break;
+					$asset_pages = array_merge( array( $registered_context['menu_slug'] ), $registered_context['asset_pages'] );
+					if (
+						( $page && in_array( $page, $asset_pages, true ) ) ||
+						false !== strpos( $hook_suffix, $registered_context['menu_slug'] )
+					) {
+						$context = $registered_context;
+						break;
+					}
 				}
 			}
 
-			if ( ! $relevant ) {
+			if ( ! $context || empty( $context['asset_url'] ) ) {
 				return;
 			}
 
@@ -152,6 +173,11 @@ if ( ! class_exists( __NAMESPACE__ . '\\Expert_Services' ) ) {
 
 			if ( ! $context || ! current_user_can( $context['capability'] ) ) {
 				wp_die( esc_html__( 'You do not have permission to access this page.', 'woo-min-max-quantity-step-control-single' ) );
+			}
+
+			if ( in_array( $context['page_mode'], array( 'audit', 'review' ), true ) ) {
+				self::render_review_page( $context );
+				return;
 			}
 
 			$links = self::get_contact_links( $context, 'hire-page' );
@@ -215,6 +241,130 @@ if ( ! class_exists( __NAMESPACE__ . '\\Expert_Services' ) ) {
 		}
 
 		/**
+		 * Render the free store-review experience.
+		 *
+		 * @param array<string,mixed> $context Current plugin context.
+		 * @return void
+		 */
+		private static function render_review_page( $context ) {
+			$links = self::get_contact_links( $context, 'free-store-review-page' );
+			?>
+			<div class="wrap caes-page caes-review-page">
+				<h1 class="caes-notice-anchor" aria-hidden="true"></h1>
+
+				<section class="caes-hero caes-review-hero">
+					<div class="caes-eyebrow"><?php esc_html_e( 'FREE WORDPRESS & WOOCOMMERCE AUDIT', 'woo-product-table' ); ?></div>
+					<h1><?php echo esc_html( $context['headline'] ); ?></h1>
+					<p class="caes-lead"><?php echo esc_html( $context['description'] ); ?></p>
+					<div class="caes-review-trust" aria-label="<?php esc_attr_e( 'Review highlights', 'woo-product-table' ); ?>">
+						<span><span class="dashicons dashicons-yes" aria-hidden="true"></span><?php esc_html_e( 'Free initial audit', 'woo-product-table' ); ?></span>
+						<span><span class="dashicons dashicons-yes" aria-hidden="true"></span><?php esc_html_e( 'No obligation to hire', 'woo-product-table' ); ?></span>
+						<span><span class="dashicons dashicons-yes" aria-hidden="true"></span><?php esc_html_e( 'Clear, practical next steps', 'woo-product-table' ); ?></span>
+					</div>
+					<div class="caes-actions">
+						<a class="button button-primary button-hero" href="<?php echo esc_url( $links['contact'] ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Request My Free Audit', 'woo-product-table' ); ?></a>
+						<a class="button button-hero" href="<?php echo esc_url( $links['gmail'] ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Send Details with Gmail', 'woo-product-table' ); ?></a>
+						<a class="caes-text-link" href="<?php echo esc_url( $links['email'] ); ?>"><?php esc_html_e( 'or use your email app', 'woo-product-table' ); ?></a>
+					</div>
+				</section>
+
+				<section class="caes-section">
+					<div class="caes-section-heading caes-review-heading">
+						<span><?php esc_html_e( 'WHAT WE REVIEW', 'woo-product-table' ); ?></span>
+						<h2><?php esc_html_e( 'A practical look at the parts of your store that matter', 'woo-product-table' ); ?></h2>
+						<p><?php esc_html_e( 'This is not a generic automated score. We look for visible problems, friction, and realistic opportunities across your WordPress and WooCommerce site.', 'woo-product-table' ); ?></p>
+					</div>
+					<div class="caes-review-grid">
+						<?php foreach ( $context['review_items'] as $item ) : ?>
+							<article class="caes-review-item">
+								<span class="dashicons <?php echo esc_attr( $item['icon'] ); ?>" aria-hidden="true"></span>
+								<div><h3><?php echo esc_html( $item['title'] ); ?></h3><p><?php echo esc_html( $item['description'] ); ?></p></div>
+							</article>
+						<?php endforeach; ?>
+					</div>
+				</section>
+
+				<section class="caes-section caes-process-section">
+					<div class="caes-section-heading">
+						<span><?php esc_html_e( 'HOW IT WORKS', 'woo-product-table' ); ?></span>
+						<h2><?php esc_html_e( 'Useful findings without a complicated process', 'woo-product-table' ); ?></h2>
+					</div>
+					<div class="caes-process-grid">
+						<div><strong>01</strong><h3><?php esc_html_e( 'Share your website', 'woo-product-table' ); ?></h3><p><?php esc_html_e( 'Send your store URL, the issue you care about most, and any helpful screenshots. Do not send passwords.', 'woo-product-table' ); ?></p></div>
+						<div><strong>02</strong><h3><?php esc_html_e( 'We audit the essentials', 'woo-product-table' ); ?></h3><p><?php esc_html_e( 'We perform a focused, non-invasive audit of the selected store areas and the experience related to this plugin.', 'woo-product-table' ); ?></p></div>
+						<div><strong>03</strong><h3><?php esc_html_e( 'Get prioritized next steps', 'woo-product-table' ); ?></h3><p><?php esc_html_e( 'You receive clear findings and practical recommendations, with an optional quotation only if you want our help.', 'woo-product-table' ); ?></p></div>
+					</div>
+					<div class="caes-scope-note"><span class="dashicons dashicons-info-outline" aria-hidden="true"></span><p><?php esc_html_e( 'The free audit is an initial, non-invasive assessment—not a penetration test, formal security certification, or guarantee of SEO rankings.', 'woo-product-table' ); ?></p></div>
+				</section>
+
+				<section class="caes-final-cta caes-review-cta">
+					<div><span><?php esc_html_e( 'READY WHEN YOU ARE', 'woo-product-table' ); ?></span><h2><?php esc_html_e( 'Send your store URL and tell us what concerns you most.', 'woo-product-table' ); ?></h2><p><?php esc_html_e( 'Start with the public website—no WordPress password is required for the initial review.', 'woo-product-table' ); ?></p></div>
+					<a class="button button-primary button-hero" href="<?php echo esc_url( $links['contact'] ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Request My Free Audit', 'woo-product-table' ); ?></a>
+				</section>
+
+				<section class="caes-payment-section" aria-labelledby="caes-payment-title">
+					<div class="caes-payment-icon" aria-hidden="true"><span class="dashicons dashicons-lock"></span></div>
+					<div class="caes-payment-copy">
+						<span><?php esc_html_e( 'FOR EXISTING CLIENTS ONLY', 'woo-product-table' ); ?></span>
+						<h2 id="caes-payment-title"><?php esc_html_e( 'Make a Secure Payment - USD', 'woo-product-table' ); ?></h2>
+						<p><?php esc_html_e( 'Use this option only after your project scope and quotation have been confirmed with our team.', 'woo-product-table' ); ?></p>
+						<small><?php esc_html_e( 'Secure payment powered by Stripe.', 'woo-product-table' ); ?></small>
+					</div>
+					<a class="button button-primary button-hero caes-payment-button" href="https://buy.stripe.com/28E5kCdPBaEx1js6Dm48004" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Make a Secure Payment', 'woo-product-table' ); ?></a>
+				</section>
+			</div>
+			<?php
+		}
+
+		/**
+		 * Build the common store-audit areas plus one plugin-specific area.
+		 *
+		 * @param array<string,mixed> $context Current plugin context.
+		 * @return array<int,array<string,string>>
+		 */
+		private static function get_default_audit_items( $context ) {
+			$focus_title = $context['audit_focus_title']
+				? $context['audit_focus_title']
+				: sprintf( '%s & Store Experience', $context['plugin_name'] );
+			$focus_description = $context['audit_focus_description']
+				? $context['audit_focus_description']
+				: 'How the plugin experience fits into the customer journey and where usability can be improved.';
+
+			return array(
+				array(
+					'icon'        => 'dashicons-performance',
+					'title'       => 'Speed',
+					'description' => 'What is actually slowing your pages down—not just another generic performance score.',
+				),
+				array(
+					'icon'        => 'dashicons-admin-plugins',
+					'title'       => 'Plugins',
+					'description' => 'Outdated or abandoned plugins, unnecessary overlap, and visible signs of known vulnerability risks.',
+				),
+				array(
+					'icon'        => 'dashicons-search',
+					'title'       => 'SEO & Indexability',
+					'description' => 'Whether search engines can index your important pages and whether basic technical signals are working correctly.',
+				),
+				array(
+					'icon'        => 'dashicons-cart',
+					'title'       => 'Checkout',
+					'description' => 'Friction, confusing steps, or visible problems that may cause customers to leave before completing payment.',
+				),
+				array(
+					'icon'        => 'dashicons-shield-alt',
+					'title'       => 'Basic Security Signals',
+					'description' => 'Publicly exposed files, basic permission concerns, login protection, and other visible security warning signs.',
+				),
+				array(
+					'icon'        => $context['audit_focus_icon'],
+					'title'       => $focus_title,
+					'description' => $focus_description,
+				),
+			);
+		}
+
+		/**
 		 * Render the compact card used at the end of a plugin settings page.
 		 *
 		 * @param string $key Registered context key.
@@ -231,12 +381,12 @@ if ( ! class_exists( __NAMESPACE__ . '\\Expert_Services' ) ) {
 			?>
 			<section class="caes-settings-card" aria-labelledby="caes-settings-title">
 				<div class="caes-settings-copy">
-					<span class="caes-eyebrow"><?php esc_html_e( 'NEED SOMETHING MORE CUSTOM?', 'woo-min-max-quantity-step-control-single' ); ?></span>
+					<span class="caes-eyebrow"><?php echo esc_html( $context['settings_eyebrow'] ); ?></span>
 					<h2 id="caes-settings-title"><?php echo esc_html( $context['headline'] ); ?></h2>
 					<p><?php echo esc_html( $context['settings_description'] ); ?></p>
 				</div>
 				<div class="caes-actions">
-					<a class="button button-primary" href="<?php echo esc_url( admin_url( $context['admin_page_path'] ? $context['admin_page_path'] : 'admin.php?page=' . $context['menu_slug'] ) ); ?>"><?php esc_html_e( 'Explore Expert Help', 'woo-min-max-quantity-step-control-single' ); ?></a>
+					<a class="button button-primary" href="<?php echo esc_url( admin_url( $context['admin_page_path'] ? $context['admin_page_path'] : 'admin.php?page=' . $context['menu_slug'] ) ); ?>"><?php echo esc_html( $context['settings_button_text'] ); ?></a>
 					<a class="button" href="<?php echo esc_url( $links['email'] ); ?>"><?php esc_html_e( 'Email Us', 'woo-min-max-quantity-step-control-single' ); ?></a>
 				</div>
 			</section>
@@ -256,13 +406,14 @@ if ( ! class_exists( __NAMESPACE__ . '\\Expert_Services' ) ) {
 			}
 
 			$links = self::get_contact_links( $context, 'dashboard-widget' );
+			$audit_page_url = admin_url( $context['admin_page_path'] ? $context['admin_page_path'] : 'admin.php?page=' . $context['menu_slug'] );
 			?>
 			<div class="caes-dashboard-widget">
 				<div class="caes-widget-badge"><?php esc_html_e( 'CodeAstrology Team', 'woo-min-max-quantity-step-control-single' ); ?></div>
-				<h3><?php esc_html_e( 'Need help with WordPress or WooCommerce?', 'woo-min-max-quantity-step-control-single' ); ?></h3>
-				<p><?php esc_html_e( 'We can help with plugin customization, bug fixing, store setup, custom workflows, integrations, and complete WooCommerce development.', 'woo-min-max-quantity-step-control-single' ); ?></p>
+				<h3><?php esc_html_e( 'Want to know what may be holding your website back?', 'woo-min-max-quantity-step-control-single' ); ?></h3>
+				<p><?php esc_html_e( 'Get a free initial audit covering speed, plugins, SEO visibility, checkout, basic security signals, and the experience related to your CodeAstrology plugin.', 'woo-min-max-quantity-step-control-single' ); ?></p>
 				<div class="caes-actions">
-					<a class="button button-primary" href="<?php echo esc_url( $links['contact'] ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Hire an Expert', 'woo-min-max-quantity-step-control-single' ); ?></a>
+					<a class="button button-primary" href="<?php echo esc_url( $audit_page_url ); ?>"><?php esc_html_e( 'Explore Free Store Audit', 'woo-min-max-quantity-step-control-single' ); ?></a>
 					<a class="button" href="<?php echo esc_url( $links['gmail'] ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Gmail Us', 'woo-min-max-quantity-step-control-single' ); ?></a>
 					<a class="button" href="<?php echo esc_url( $links['email'] ); ?>"><?php esc_html_e( 'Email Us', 'woo-min-max-quantity-step-control-single' ); ?></a>
 				</div>
@@ -310,19 +461,30 @@ if ( ! class_exists( __NAMESPACE__ . '\\Expert_Services' ) ) {
 		 * @return array<string,string>
 		 */
 		private static function get_contact_links( $context, $placement = 'plugin-admin' ) {
-			$subject = sprintf( 'Custom WooCommerce Development Request - %s', $context['plugin_name'] );
-			$body    = sprintf(
-				"Hello CodeAstrology Team,\n\nI am using %1\$s (version %2\$s) and would like help with custom WordPress or WooCommerce development.\n\nWebsite URL:\nProject requirement:\nExpected timeline:\nAdditional details:\n",
-				$context['plugin_name'],
-				$context['plugin_version']
-			);
+			if ( in_array( $context['page_mode'], array( 'audit', 'review' ), true ) ) {
+				$subject = sprintf( 'Free WooCommerce Store Audit Request - %s', $context['plugin_name'] );
+				$body    = sprintf(
+					"Hello CodeAstrology Team,\n\nI am using %1\$s (version %2\$s) and would like a free audit of my WordPress/WooCommerce site.\n\nWebsite URL:\nMain concern:\nAreas to audit (Speed / Plugins / SEO / Checkout / Security / Plugin Experience):\nRelevant screenshots or details:\n\nI understand that I should not send passwords for the initial audit.\n",
+					$context['plugin_name'],
+					$context['plugin_version']
+				);
+				$campaign = 'free-store-audit';
+			} else {
+				$subject = sprintf( 'Custom WooCommerce Development Request - %s', $context['plugin_name'] );
+				$body    = sprintf(
+					"Hello CodeAstrology Team,\n\nI am using %1\$s (version %2\$s) and would like help with custom WordPress or WooCommerce development.\n\nWebsite URL:\nProject requirement:\nExpected timeline:\nAdditional details:\n",
+					$context['plugin_name'],
+					$context['plugin_version']
+				);
+				$campaign = 'hire-an-expert';
+			}
 
 			$contact = add_query_arg(
 				array(
 					'service_context' => $context['key'],
 					'utm_source'      => $context['key'],
 					'utm_medium'      => 'plugin-admin',
-					'utm_campaign'    => 'hire-an-expert',
+					'utm_campaign'    => $campaign,
 					'utm_content'     => sanitize_key( $placement ),
 				),
 				$context['contact_url']
